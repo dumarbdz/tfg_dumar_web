@@ -53,8 +53,7 @@ if (getenv('DATABASE_URL')) {
             } catch (\Throwable) {
                 return false;
             }
-        },
-        true
+        }
     );
 }
 
