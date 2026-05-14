@@ -148,7 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pmLabel = $draft['payment_method'];
                 $stOrder = $pdo->prepare(
                     'INSERT INTO pedidos (usuario_id, total, estado, envio_nombre, envio_linea1, envio_postal, envio_ciudad, envio_pais, metodo_pago)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     RETURNING id'
                 );
                 $stOrder->execute([
                     $user['id'],
@@ -161,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $draft['shipping_country'],
                     $pmLabel,
                 ]);
-                $orderId = (int) $pdo->lastInsertId();
+                $orderId = (int) $stOrder->fetchColumn();
 
                 $stItem = $pdo->prepare('INSERT INTO lineas_pedido (pedido_id, producto_id, talla, cantidad, precio_unitario) VALUES (?, ?, ?, ?, ?)');
                 $stUpd  = $pdo->prepare('UPDATE stock SET cantidad = cantidad - ? WHERE producto_id = ? AND talla = ?');

@@ -7,6 +7,12 @@ function h(string $s): string
     return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+/** Convierte el valor booleano de PostgreSQL ('t'/'f') a bool PHP. */
+function pg_bool(mixed $val): bool
+{
+    return $val === true || $val === 't' || $val === '1' || $val === 1;
+}
+
 function csrf_token(): string
 {
     if (empty($_SESSION['_csrf'])) {
