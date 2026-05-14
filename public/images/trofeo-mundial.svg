@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 480" fill="none">
+  <!-- Trofeo Copa del Mundo — ilustración vectorial -->
+
+  <!-- Sombra/glow base -->
+  <ellipse cx="160" cy="440" rx="72" ry="14" fill="#c8960c" opacity="0.18"/>
+
+  <!-- Base rectangular -->
+  <rect x="88" y="390" width="144" height="36" rx="4" fill="#a07208"/>
+  <rect x="96" y="394" width="128" height="28" rx="2" fill="#c8960c"/>
+  <!-- Línea decorativa base -->
+  <rect x="104" y="402" width="112" height="2" rx="1" fill="#f0c040" opacity="0.6"/>
+  <rect x="104" y="410" width="112" height="2" rx="1" fill="#f0c040" opacity="0.4"/>
+
+  <!-- Pedestal central -->
+  <path d="M128 390 L132 340 L188 340 L192 390 Z" fill="#b07a0a"/>
+  <path d="M132 390 L136 344 L184 344 L188 390 Z" fill="#c8960c"/>
+
+  <!-- Cuerpo principal del trofeo -->
+  <!-- Tronco inferior -->
+  <path d="M136 344 C136 344 130 310 128 290 C126 270 130 255 160 250 C190 255 194 270 192 290 C190 310 184 344 184 344 Z" fill="#c8960c"/>
+  <path d="M142 340 C142 340 138 308 136 290 C134 274 138 262 160 258 C182 262 186 274 184 290 C182 308 178 340 178 340 Z" fill="#d4a824"/>
+
+  <!-- Brazos/asas (figuras humanas estilizadas) -->
+  <!-- Asa izquierda -->
+  <path d="M128 290 C115 285 100 270 95 250 C90 230 100 215 115 220 C120 222 124 228 128 240" stroke="#c8960c" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M128 290 C115 285 100 270 95 250 C90 230 100 215 115 220 C120 222 124 228 128 240" stroke="#d4a824" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+  <!-- Asa derecha -->
+  <path d="M192 290 C205 285 220 270 225 250 C230 230 220 215 205 220 C200 222 196 228 192 240" stroke="#c8960c" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M192 290 C205 285 220 270 225 250 C230 230 220 215 205 220 C200 222 196 228 192 240" stroke="#d4a824" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+  <!-- Globo terráqueo (parte superior) -->
+  <!-- Círculo exterior -->
+  <circle cx="160" cy="190" r="72" fill="#a07208"/>
+  <circle cx="160" cy="190" r="68" fill="#c8960c"/>
+  <!-- Brillo del globo -->
+  <circle cx="160" cy="190" r="68" fill="url(#globe-gradient)"/>
+  <!-- Continentes simplificados -->
+  <ellipse cx="148" cy="178" rx="20" ry="26" fill="#b8860a" opacity="0.7"/>
+  <ellipse cx="176" cy="185" rx="14" ry="20" fill="#b8860a" opacity="0.6"/>
+  <ellipse cx="155" cy="208" rx="10" ry="14" fill="#b8860a" opacity="0.5"/>
+  <ellipse cx="140" cy="198" rx="8" ry="10" fill="#b8860a" opacity="0.4"/>
+  <!-- Líneas de latitud -->
+  <ellipse cx="160" cy="190" rx="68" ry="20" stroke="#f0c040" stroke-width="0.8" fill="none" opacity="0.3"/>
+  <ellipse cx="160" cy="165" rx="52" ry="14" stroke="#f0c040" stroke-width="0.8" fill="none" opacity="0.25"/>
+  <ellipse cx="160" cy="215" rx="52" ry="14" stroke="#f0c040" stroke-width="0.8" fill="none" opacity="0.25"/>
+  <!-- Línea vertical central -->
+  <line x1="160" y1="122" x2="160" y2="258" stroke="#f0c040" stroke-width="0.8" opacity="0.3"/>
+  <line x1="130" y1="126" x2="130" y2="254" stroke="#f0c040" stroke-width="0.8" opacity="0.2"/>
+  <line x1="190" y1="126" x2="190" y2="254" stroke="#f0c040" stroke-width="0.8" opacity="0.2"/>
+  <!-- Borde del globo -->
+  <circle cx="160" cy="190" r="68" stroke="#f0c040" stroke-width="2" fill="none" opacity="0.5"/>
+
+  <!-- Brillo superior -->
+  <ellipse cx="145" cy="158" rx="24" ry="16" fill="white" opacity="0.12"/>
+
+  <!-- Texto FIFA WORLD CUP 2026 en la base -->
+  <text x="160" y="408" font-family="'Barlow Condensed', Arial Narrow, sans-serif" font-size="9" font-weight="800" fill="#f0c040" text-anchor="middle" letter-spacing="2" opacity="0.9">FIFA WORLD CUP</text>
+  <text x="160" y="420" font-family="'Barlow Condensed', Arial Narrow, sans-serif" font-size="11" font-weight="800" fill="#fff8e0" text-anchor="middle" letter-spacing="3">2026</text>
+
+  <!-- Definiciones de gradiente -->
+  <defs>
+    <radialGradient id="globe-gradient" cx="40%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#f0c040" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="#c8960c" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#8b6200" stop-opacity="0.3"/>
+    </radialGradient>
+  </defs>
+</svg>

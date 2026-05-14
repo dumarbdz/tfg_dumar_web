@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -r ' *)",
+      "Bash(\"/c/xampp/mysql/bin/mysqladmin\" --user=root --host=127.0.0.1 ping)",
+      "Bash(\"/c/xampp/mysql/bin/mysqld\" --standalone)",
+      "Bash(php -S localhost:8080 -t \"C:\\\\Users\\\\User\\\\Desktop\\\\tfg_dumar_web\\\\public\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/index.php)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/catalog.php)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/orders.php)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/)",
+      "Bash(composer --version)",
+      "Bash(C:/xampp/mysql/bin/mysql.exe -u root mundial_store -e ' *)"
+    ]
+  }
+}
