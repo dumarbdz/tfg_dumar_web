@@ -1,85 +1,114 @@
--- Esquema PostgreSQL para Neon
--- Equivalente a schema.sql pero compatible con PostgreSQL 17
+-- Esquema PostgreSQL para Neon — nombres y columnas según el código PHP
 
 DROP TABLE IF EXISTS sessions;
-DROP TABLE IF EXISTS order_items;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS product_stock;
-DROP TABLE IF EXISTS products;
-DROP TABLE IF EXISTS password_resets;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS intentos_login;
+DROP TABLE IF EXISTS favoritos;
+DROP TABLE IF EXISTS valoraciones;
+DROP TABLE IF EXISTS lineas_pedido;
+DROP TABLE IF EXISTS pedidos;
+DROP TABLE IF EXISTS stock;
+DROP TABLE IF EXISTS productos;
+DROP TABLE IF EXISTS recuperaciones_password;
+DROP TABLE IF EXISTS usuarios;
 
-CREATE TABLE users (
+CREATE TABLE usuarios (
   id SERIAL PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  name VARCHAR(100) NOT NULL,
-  saved_name    VARCHAR(200) DEFAULT NULL,
-  saved_line1   VARCHAR(255) DEFAULT NULL,
-  saved_postal  VARCHAR(32)  DEFAULT NULL,
-  saved_city    VARCHAR(120) DEFAULT NULL,
-  saved_country VARCHAR(120) DEFAULT NULL,
-  is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  nombre VARCHAR(100) NOT NULL,
+  contrasena_hash VARCHAR(255) NOT NULL,
+  es_admin BOOLEAN NOT NULL DEFAULT FALSE,
+  dir_nombre    VARCHAR(200) DEFAULT NULL,
+  dir_linea1    VARCHAR(255) DEFAULT NULL,
+  dir_postal    VARCHAR(32)  DEFAULT NULL,
+  dir_ciudad    VARCHAR(120) DEFAULT NULL,
+  dir_pais      VARCHAR(120) DEFAULT NULL,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE password_resets (
+CREATE TABLE recuperaciones_password (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  usuario_id INTEGER NOT NULL,
   token_hash CHAR(64) NOT NULL UNIQUE,
-  expires_at TIMESTAMP NOT NULL,
-  used_at TIMESTAMP DEFAULT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_pr_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  expira_en TIMESTAMP NOT NULL,
+  usado_en TIMESTAMP DEFAULT NULL,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_rp_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
-CREATE INDEX idx_pr_user ON password_resets(user_id);
-CREATE INDEX idx_pr_expires ON password_resets(expires_at);
+CREATE INDEX idx_rp_usuario ON recuperaciones_password(usuario_id);
+CREATE INDEX idx_rp_expira ON recuperaciones_password(expira_en);
 
-CREATE TABLE products (
+CREATE TABLE productos (
   id SERIAL PRIMARY KEY,
-  brand VARCHAR(50) NOT NULL,
-  model VARCHAR(150) NOT NULL,
+  continente VARCHAR(50) NOT NULL,
+  seleccion VARCHAR(150) NOT NULL,
   slug VARCHAR(200) NOT NULL UNIQUE,
-  description TEXT,
-  price DECIMAL(10,2) NOT NULL,
-  image_path VARCHAR(255) DEFAULT NULL,
-  active BOOLEAN NOT NULL DEFAULT TRUE
+  descripcion TEXT,
+  precio DECIMAL(10,2) NOT NULL,
+  imagen VARCHAR(255) DEFAULT NULL,
+  activo BOOLEAN NOT NULL DEFAULT TRUE
 );
-CREATE INDEX idx_products_brand ON products(brand);
+CREATE INDEX idx_productos_continente ON productos(continente);
 
-CREATE TABLE product_stock (
+CREATE TABLE stock (
   id SERIAL PRIMARY KEY,
-  product_id INTEGER NOT NULL,
-  size VARCHAR(10) NOT NULL,
-  quantity INTEGER NOT NULL DEFAULT 0,
-  UNIQUE (product_id, size),
-  CONSTRAINT fk_stock_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+  producto_id INTEGER NOT NULL,
+  talla VARCHAR(10) NOT NULL,
+  cantidad INTEGER NOT NULL DEFAULT 0,
+  UNIQUE (producto_id, talla),
+  CONSTRAINT fk_stock_producto FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
-CREATE TABLE orders (
+CREATE TABLE pedidos (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  usuario_id INTEGER NOT NULL,
   total DECIMAL(10,2) NOT NULL,
-  status VARCHAR(50) NOT NULL DEFAULT 'completed',
-  shipping_name VARCHAR(200) NOT NULL DEFAULT '',
-  shipping_line1 VARCHAR(255) NOT NULL DEFAULT '',
-  shipping_postal VARCHAR(32) NOT NULL DEFAULT '',
-  shipping_city VARCHAR(120) NOT NULL DEFAULT '',
-  shipping_country VARCHAR(120) NOT NULL DEFAULT '',
-  payment_method VARCHAR(50) NOT NULL DEFAULT '',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id)
+  estado VARCHAR(50) NOT NULL DEFAULT 'completado',
+  envio_nombre VARCHAR(200) NOT NULL DEFAULT '',
+  envio_linea1 VARCHAR(255) NOT NULL DEFAULT '',
+  envio_postal VARCHAR(32) NOT NULL DEFAULT '',
+  envio_ciudad VARCHAR(120) NOT NULL DEFAULT '',
+  envio_pais VARCHAR(120) NOT NULL DEFAULT '',
+  metodo_pago VARCHAR(50) NOT NULL DEFAULT '',
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_pedidos_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
-CREATE TABLE order_items (
+CREATE TABLE lineas_pedido (
   id SERIAL PRIMARY KEY,
-  order_id INTEGER NOT NULL,
-  product_id INTEGER NOT NULL,
-  size VARCHAR(10) NOT NULL,
-  quantity INTEGER NOT NULL,
-  unit_price DECIMAL(10,2) NOT NULL,
-  CONSTRAINT fk_oi_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-  CONSTRAINT fk_oi_product FOREIGN KEY (product_id) REFERENCES products(id)
+  pedido_id INTEGER NOT NULL,
+  producto_id INTEGER NOT NULL,
+  talla VARCHAR(10) NOT NULL,
+  cantidad INTEGER NOT NULL,
+  precio_unitario DECIMAL(10,2) NOT NULL,
+  CONSTRAINT fk_lp_pedido FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+  CONSTRAINT fk_lp_producto FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+CREATE TABLE valoraciones (
+  id SERIAL PRIMARY KEY,
+  producto_id INTEGER NOT NULL,
+  usuario_id INTEGER NOT NULL,
+  puntuacion SMALLINT NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
+  comentario TEXT DEFAULT NULL,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (producto_id, usuario_id),
+  CONSTRAINT fk_val_producto FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE,
+  CONSTRAINT fk_val_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE favoritos (
+  usuario_id INTEGER NOT NULL,
+  producto_id INTEGER NOT NULL,
+  PRIMARY KEY (usuario_id, producto_id),
+  CONSTRAINT fk_fav_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  CONSTRAINT fk_fav_producto FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE intentos_login (
+  ip VARCHAR(45) PRIMARY KEY,
+  intentos SMALLINT NOT NULL DEFAULT 1,
+  bloqueado_hasta TIMESTAMP DEFAULT NULL,
+  actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla para sesiones PHP en entorno serverless (Vercel)
