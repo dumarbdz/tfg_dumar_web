@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#eef2ff"/>
+  <!-- Cuerpo de la camiseta — color rojo Rusia -->
+  <path d="M162,52 L88,78 L48,65 L28,132 L92,150 L92,266 L308,266 L308,150 L372,132 L352,65 L312,78 L238,52 Q200,80 162,52 Z" fill="#D52B1E" stroke="#cccccc" stroke-width="1"/>
+  <!-- Franja blanca horizontal central (bandera rusa) -->
+  <path d="M92,175 L308,175 L308,200 L92,200 Z" fill="#ffffff" opacity="0.25"/>
+  <!-- Franja azul horizontal inferior (bandera rusa) -->
+  <path d="M92,200 L308,200 L308,225 L92,225 Z" fill="#0039A6" opacity="0.3"/>
+  <!-- Cuello: franja tricolor (blanco/azul/rojo) -->
+  <path d="M162,52 Q200,80 238,52" fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M162,52 Q200,80 238,52" fill="none" stroke="#0039A6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6,6"/>
+  <!-- Texto -->
+  <text x="200" y="168" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial,sans-serif" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="0.5">Rusia</text>
+  <text x="200" y="244" text-anchor="middle" dominant-baseline="middle" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.65">Europa</text>
+</svg>

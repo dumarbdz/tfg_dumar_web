@@ -1,0 +1,335 @@
+<mxfile host="app.diagrams.net" agent="Claude Code">
+  <diagram id="flujo-mundial-store" name="Flujo Mundial Store">
+    <mxGraphModel dx="2617" dy="366" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="870" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=14;fontStyle=1;" value="Mundial Store — Diagrama de flujo de navegación" vertex="1">
+          <mxGeometry height="28" width="700" x="500" y="12" as="geometry" />
+        </mxCell>
+        <mxCell id="n_confirm" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" value="Pantalla de confirmación&#xa;+ Email del pedido al usuario" vertex="1">
+          <mxGeometry height="58" width="170" x="258" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n_save" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=10;" value="Sistema: guardar pedido&#xa;en BD y descontar stock" vertex="1">
+          <mxGeometry height="58" width="162" x="462" y="139" as="geometry" />
+        </mxCell>
+        <mxCell id="n_payment" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Método de pago&#xa;(tarjeta, Bizum, transferencia)" vertex="1">
+          <mxGeometry height="58" width="158" x="670" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n_shipping" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Datos de envío&#xa;(nombre, dirección, país)" vertex="1">
+          <mxGeometry height="58" width="158" x="870" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n_review" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" value="Valorar producto&#xa;(si ya lo ha comprado)" vertex="1">
+          <mxGeometry height="52" width="155" x="171" y="259" as="geometry" />
+        </mxCell>
+        <mxCell id="n_paycheck" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#555555;fontSize=10;" value="¿Pago correcto?" vertex="1">
+          <mxGeometry height="66" width="130" x="478" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="n_session" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#555555;fontSize=10;" value="¿Sesión iniciada?" vertex="1">
+          <mxGeometry height="66" width="130" x="1026" y="242" as="geometry" />
+        </mxCell>
+        <mxCell id="n_login" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Iniciar sesión&#xa;(email / contraseña)" vertex="1">
+          <mxGeometry height="56" width="158" x="1200" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="n_hasaccount" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#555555;fontSize=10;" value="¿Tiene cuenta?" vertex="1">
+          <mxGeometry height="66" width="126" x="1412" y="189" as="geometry" />
+        </mxCell>
+        <mxCell id="n_checkout" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="Tramitar compra" vertex="1">
+          <mxGeometry height="52" width="138" x="1022" y="362" as="geometry" />
+        </mxCell>
+        <mxCell id="n_register" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Registro&#xa;(crear cuenta)" vertex="1">
+          <mxGeometry height="52" width="126" x="1407" y="362" as="geometry" />
+        </mxCell>
+        <mxCell id="n_myaccount" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Mi cuenta&#xa;(perfil y dirección guardada)" vertex="1">
+          <mxGeometry height="52" width="158" x="1200" y="362" as="geometry" />
+        </mxCell>
+        <mxCell id="n_cart" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="Ver carrito&#xa;(actualizar cantidades)" vertex="1">
+          <mxGeometry height="55" width="138" x="1022" y="462" as="geometry" />
+        </mxCell>
+        <mxCell id="n_myorders" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Mis pedidos&#xa;(historial de compras)" vertex="1">
+          <mxGeometry height="52" width="158" x="1200" y="462" as="geometry" />
+        </mxCell>
+        <mxCell id="n_forgot" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Olvidó la contraseña&#xa;(correo → enlace → nueva clave)" vertex="1">
+          <mxGeometry height="52" width="166" x="1385" y="462" as="geometry" />
+        </mxCell>
+        <mxCell id="n_inicio" parent="1" style="ellipse;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#555555;fontColor=#333333;fontStyle=1;fontSize=11;" value="INICIO" vertex="1">
+          <mxGeometry height="40" width="100" x="60" y="62" as="geometry" />
+        </mxCell>
+        <mxCell id="n_home" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Inicio de la web&#xa;Destacados + barra de búsqueda" vertex="1">
+          <mxGeometry height="64" width="185" x="40" y="136" as="geometry" />
+        </mxCell>
+        <mxCell id="n_results" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Listado y resultados&#xa;de búsqueda" vertex="1">
+          <mxGeometry height="58" width="162" x="40" y="558" as="geometry" />
+        </mxCell>
+        <mxCell id="n_filters" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" value="Filtros opcionales&#xa;(continente, talla, color, precio)" vertex="1">
+          <mxGeometry height="58" width="164" x="248" y="558" as="geometry" />
+        </mxCell>
+        <mxCell id="n_product" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Ficha del producto&#xa;(foto, descripción, tallas, valoraciones)" vertex="1">
+          <mxGeometry height="58" width="172" x="458" y="558" as="geometry" />
+        </mxCell>
+        <mxCell id="n_stock" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#555555;fontSize=10;" value="¿Talla disponible?" vertex="1">
+          <mxGeometry height="70" width="130" x="672" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="n_addcart" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="Añadir al carrito" vertex="1">
+          <mxGeometry height="52" width="130" x="848" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="n_keep" parent="1" style="rhombus;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#555555;fontSize=10;" value="¿Seguir buscando?" vertex="1">
+          <mxGeometry height="70" width="130" x="1018" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="n_wishlist" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" value="Lista de deseos&#xa;(guardar para después)" vertex="1">
+          <mxGeometry height="50" width="155" x="458" y="658" as="geometry" />
+        </mxCell>
+        <mxCell id="n_contact" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" value="Contacto&#xa;Formulario de consulta" vertex="1">
+          <mxGeometry height="50" width="152" x="40" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="n_admin_label" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" value="Panel de administración (solo para administradores)" vertex="1">
+          <mxGeometry height="28" width="245" x="1200" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="n_admin_dash" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Panel principal&#xa;(KPIs, gráficas, últimos pedidos)" vertex="1">
+          <mxGeometry height="52" width="172" x="1200" y="606" as="geometry" />
+        </mxCell>
+        <mxCell id="n_admin_orders" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Gestión de pedidos&#xa;(estados, búsqueda, exportar CSV)" vertex="1">
+          <mxGeometry height="52" width="172" x="1200" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="n_admin_products" parent="1" style="rounded=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="Gestión de productos&#xa;(crear, editar, stock por talla)" vertex="1">
+          <mxGeometry height="52" width="172" x="1400" y="656" as="geometry" />
+        </mxCell>
+        <mxCell id="e01" edge="1" parent="1" source="n_inicio" style="edgeStyle=orthogonalEdgeStyle;" target="n_home">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" edge="1" parent="1" source="n_home" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_results" value="Buscar / catálogo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="122" y="200" />
+              <mxPoint x="122" y="558" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e03" edge="1" parent="1" source="n_home" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_product" value="Clic en destacado">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="132" y="490" />
+              <mxPoint x="544" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e04" edge="1" parent="1" source="n_home" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;" target="n_contact" value="Menú → Contacto">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="25" y="168" />
+              <mxPoint x="25" y="685" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e05" edge="1" parent="1" source="n_results" style="edgeStyle=orthogonalEdgeStyle;" target="n_filters">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" edge="1" parent="1" source="n_results" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=1;exitY=0;entryX=0;entryY=0;" target="n_product" value="Sin filtros">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="202" y="530" />
+              <mxPoint x="458" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e07" edge="1" parent="1" source="n_filters" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_product" value="Aplicar filtros">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" edge="1" parent="1" source="n_product" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_stock" value="Seleccionar talla">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e09" edge="1" parent="1" source="n_stock" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_addcart" value="Sí">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="n_stock" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0.5;exitY=1;" target="n_filters" value="No (sin stock)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="737" y="644" />
+              <mxPoint x="330" y="644" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="n_product" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;" target="n_wishlist" value="Guardar en favoritos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="n_addcart" style="edgeStyle=orthogonalEdgeStyle;" target="n_keep">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="n_keep" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0;exitY=0.5;" target="n_results" value="Sí">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1005" y="616" />
+              <mxPoint x="121" y="616" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="n_keep" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_cart" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="n_cart" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_checkout" value="Tramitar compra">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="n_checkout" style="edgeStyle=orthogonalEdgeStyle;" target="n_session">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="n_session" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0.5;exitY=0;" target="n_shipping" value="Sí">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1085" y="112" />
+              <mxPoint x="949" y="112" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="n_session" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_login" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="n_shipping" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_payment" value="Confirmar dirección">
+          <mxGeometry relative="1" x="-0.0476" y="17" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" source="n_payment" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" target="n_shipping" value="Corregir envío">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="749" y="112" />
+              <mxPoint x="949" y="112" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" source="n_payment" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_save" value="Confirmar método">
+          <mxGeometry relative="1" x="0.0526" y="16" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="1" source="n_save" style="edgeStyle=orthogonalEdgeStyle;" target="n_paycheck">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="1" source="n_paycheck" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_confirm" value="Sí">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="275" />
+              <mxPoint x="343" y="275" />
+              <mxPoint x="343" y="198" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e24" edge="1" parent="1" source="n_paycheck" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" target="n_payment" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="275" />
+              <mxPoint x="749" y="275" />
+              <mxPoint x="749" y="198" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="1" source="n_confirm" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="n_home" value="Volver al inicio">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="234" y="169" />
+              <mxPoint x="234" y="168" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="1" source="n_confirm" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;" target="n_review" value="Valorar producto">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="343" y="229" />
+              <mxPoint x="249" y="229" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="1" source="n_review" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;" target="n_product" value="Volver al listado">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="235" y="276" />
+              <mxPoint x="235" y="374" />
+              <mxPoint x="544" y="374" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e28" edge="1" parent="1" source="n_login" style="edgeStyle=orthogonalEdgeStyle;" target="n_hasaccount">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e29" edge="1" parent="1" source="n_hasaccount" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" target="n_session" value="Sí (login correcto)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1463" y="84" />
+              <mxPoint x="1085" y="84" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e30" edge="1" parent="1" source="n_hasaccount" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_register" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e31" edge="1" parent="1" source="n_login" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_forgot" value="Olvidó contraseña">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e32" edge="1" parent="1" source="n_register" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="n_login" value="Tras el registro">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1384" y="388" />
+              <mxPoint x="1384" y="276" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e33" edge="1" parent="1" source="n_forgot" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="n_login" value="Tras nueva clave">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1384" y="488" />
+              <mxPoint x="1384" y="276" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e34" edge="1" parent="1" source="n_login" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;" target="n_myaccount" value="Menú → Mi cuenta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e35" edge="1" parent="1" source="n_myaccount" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" target="n_myorders" value="Ver mis pedidos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e36" edge="1" parent="1" source="n_myorders" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" target="n_confirm" value="Ver detalle del pedido">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1279" y="56" />
+              <mxPoint x="343" y="56" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e37" edge="1" parent="1" source="n_login" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;strokeColor=#b85450;" target="n_admin_dash" value="Si es administrador">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1279" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e38" edge="1" parent="1" source="n_admin_dash" style="edgeStyle=orthogonalEdgeStyle;" target="n_admin_orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e39" edge="1" parent="1" source="n_admin_dash" style="edgeStyle=orthogonalEdgeStyle;" target="n_admin_products">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1392" y="632" />
+              <mxPoint x="1392" y="682" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e40" edge="1" parent="1" source="n_results" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="n_home" value="Menú → Inicio">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="18" y="587" />
+              <mxPoint x="18" y="168" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e41" edge="1" parent="1" source="n_cart" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;dashed=1;exitX=0;exitY=0.5;" target="n_home" value="Menú → Inicio">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1005" y="489" />
+              <mxPoint x="148" y="489" />
+              <mxPoint x="148" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

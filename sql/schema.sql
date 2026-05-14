@@ -1,0 +1,85 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS password_resets;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS product_stock;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS users;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  saved_name    VARCHAR(200) NULL DEFAULT NULL,
+  saved_line1   VARCHAR(255) NULL DEFAULT NULL,
+  saved_postal  VARCHAR(32)  NULL DEFAULT NULL,
+  saved_city    VARCHAR(120) NULL DEFAULT NULL,
+  saved_country VARCHAR(120) NULL DEFAULT NULL,
+  is_admin TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE password_resets (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_token_hash (token_hash),
+  KEY idx_user (user_id),
+  KEY idx_expires (expires_at),
+  CONSTRAINT fk_pr_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE products (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  brand VARCHAR(50) NOT NULL,
+  model VARCHAR(150) NOT NULL,
+  slug VARCHAR(200) NOT NULL UNIQUE,
+  description TEXT,
+  price DECIMAL(10,2) NOT NULL,
+  image_path VARCHAR(255) DEFAULT NULL,
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  INDEX idx_brand (brand)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE product_stock (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id INT UNSIGNED NOT NULL,
+  size VARCHAR(10) NOT NULL,
+  quantity INT NOT NULL DEFAULT 0,
+  UNIQUE KEY uq_product_size (product_id, size),
+  CONSTRAINT fk_stock_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE orders (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'completed',
+  shipping_name VARCHAR(200) NOT NULL DEFAULT '',
+  shipping_line1 VARCHAR(255) NOT NULL DEFAULT '',
+  shipping_postal VARCHAR(32) NOT NULL DEFAULT '',
+  shipping_city VARCHAR(120) NOT NULL DEFAULT '',
+  shipping_country VARCHAR(120) NOT NULL DEFAULT '',
+  payment_method VARCHAR(50) NOT NULL DEFAULT '',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_orders_user FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE order_items (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  order_id INT UNSIGNED NOT NULL,
+  product_id INT UNSIGNED NOT NULL,
+  size VARCHAR(10) NOT NULL,
+  quantity INT UNSIGNED NOT NULL,
+  unit_price DECIMAL(10,2) NOT NULL,
+  CONSTRAINT fk_oi_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  CONSTRAINT fk_oi_product FOREIGN KEY (product_id) REFERENCES products(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#eef2ff"/>
+  <path d="M162,52 L88,78 L48,65 L28,132 L92,150 L92,266 L308,266 L308,150 L372,132 L352,65 L312,78 L238,52 Q200,80 162,52 Z" fill="#5EB6E4" stroke="#cccccc" stroke-width="1"/>
+  <path d="M162,52 L200,78 L238,52" fill="none" stroke="#ffffff" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="200" y="172" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial,sans-serif" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="0.5">Uruguay</text>
+  <text x="200" y="208" text-anchor="middle" dominant-baseline="middle" font-family="Arial,sans-serif" font-size="13" fill="#ffffff" opacity="0.65">Sudamérica</text>
+</svg>
