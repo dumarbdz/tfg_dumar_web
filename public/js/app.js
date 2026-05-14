@@ -202,7 +202,10 @@ function dismissToast(t) {
 
 document.addEventListener('click', function (e) {
     if (!e.target.closest('.nav-item')) {
-        document.activeElement?.blur();
+        var active = document.activeElement;
+        if (active && active.closest('.nav-item')) {
+            active.blur();
+        }
     }
 });
 
