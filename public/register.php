@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 try {
                     $hash = password_hash($pass, PASSWORD_DEFAULT);
-                    $st = $pdo->prepare('INSERT INTO usuarios (email, contrasena_hash, nombre) VALUES (?, ?, ?)');
+                    $st = $pdo->prepare('INSERT INTO usuarios (email, contrasena_hash, nombre) VALUES (?, ?, ?) RETURNING id');
                     $st->execute([$email, $hash, $name]);
-                    $uid = (int) $pdo->lastInsertId();
+                    $uid = (int) $st->fetchColumn();
                     session_regenerate_id(true);
                     $_SESSION['user_id']       = $uid;
                     $_SESSION['user_email']    = $email;
