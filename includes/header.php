@@ -29,8 +29,8 @@ foreach (cart_items() as $ci) {
 
         <nav class="nav-main" aria-label="Principal">
 
-            <!-- Catálogo con dropdown -->
-            <div class="nav-item has-dropdown">
+            <!-- Catálogo con dropdown (escritorio) -->
+            <div class="nav-item has-dropdown nav-desktop">
                 <a href="/catalog.php" class="nav-link">
                     Catálogo <span class="nav-arrow">▾</span>
                 </a>
@@ -43,19 +43,20 @@ foreach (cart_items() as $ci) {
                 </div>
             </div>
 
-            <!-- Carrito -->
-            <a href="/cart.php" class="nav-link nav-cart">
-                🛒<?php if ($cartCount > 0): ?> <span class="nav-cart-badge"><?= (int)$cartCount ?></span><?php endif; ?>
+            <!-- Carrito (siempre visible) -->
+            <a href="/cart.php" class="nav-link nav-cart" aria-label="Carrito<?= $cartCount > 0 ? ", {$cartCount} artículos" : '' ?>">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <?php if ($cartCount > 0): ?><span class="nav-cart-badge"><?= (int)$cartCount ?></span><?php endif; ?>
             </a>
 
-            <!-- Mi cuenta con dropdown -->
-            <div class="nav-item has-dropdown">
+            <!-- Mi cuenta con dropdown (escritorio) -->
+            <div class="nav-item has-dropdown nav-desktop">
                 <button class="nav-link nav-account-btn" type="button" aria-haspopup="true">
                     <?php if ($user): ?>
                         <span class="nav-account-avatar"><?= mb_strtoupper(mb_substr($user['name'], 0, 1)) ?></span>
                         <span class="nav-account-name"><?= h($user['name']) ?></span>
                     <?php else: ?>
-                        👤 Mi cuenta
+                        Mi cuenta
                     <?php endif; ?>
                     <span class="nav-arrow">▾</span>
                 </button>
@@ -64,10 +65,10 @@ foreach (cart_items() as $ci) {
                         <div class="nav-dropdown-header"><?= h($user['email']) ?></div>
                         <a href="/mi-cuenta.php">Mis datos</a>
                         <a href="/orders.php">Mis pedidos</a>
-                        <a href="/wishlist.php">❤ Favoritos</a>
+                        <a href="/wishlist.php">Favoritos</a>
                         <?php if ($user['is_admin']): ?>
                             <div class="nav-dropdown-divider"></div>
-                            <a href="/admin/" class="nav-dropdown-admin">⚙ Admin</a>
+                            <a href="/admin/" class="nav-dropdown-admin">Admin</a>
                         <?php endif; ?>
                         <div class="nav-dropdown-divider"></div>
                         <a href="/logout.php" class="nav-dropdown-danger">Cerrar sesión</a>
@@ -78,8 +79,46 @@ foreach (cart_items() as $ci) {
                 </div>
             </div>
 
+            <!-- Botón hamburguesa (solo móvil) -->
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" type="button">
+                <span></span><span></span><span></span>
+            </button>
+
         </nav>
     </div>
 </header>
+
+<!-- Panel menú móvil -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Menú de navegación">
+    <form class="mobile-search" method="get" action="/catalog.php" role="search">
+        <input type="search" name="q" placeholder="Buscar selección, continente…" autocomplete="off">
+        <button type="submit">Buscar</button>
+    </form>
+    <nav class="mobile-nav" aria-label="Navegación móvil">
+        <p class="mobile-nav-section">Catálogo</p>
+        <a href="/catalog.php">Ver todo el catálogo</a>
+        <a href="/catalog.php?brand=Europa">Europa</a>
+        <a href="/catalog.php?brand=Sudam%C3%A9rica">Sudamérica</a>
+        <a href="/catalog.php?brand=%C3%81frica">África</a>
+        <a href="/catalog.php?brand=Asia">Asia</a>
+        <div class="mobile-nav-divider"></div>
+        <?php if ($user): ?>
+            <p class="mobile-nav-section"><?= h($user['name']) ?></p>
+            <a href="/mi-cuenta.php">Mis datos</a>
+            <a href="/orders.php">Mis pedidos</a>
+            <a href="/wishlist.php">Favoritos</a>
+            <?php if ($user['is_admin']): ?>
+                <a href="/admin/" class="mobile-nav-admin">Admin</a>
+            <?php endif; ?>
+            <div class="mobile-nav-divider"></div>
+            <a href="/logout.php" class="mobile-nav-danger">Cerrar sesión</a>
+        <?php else: ?>
+            <p class="mobile-nav-section">Mi cuenta</p>
+            <a href="/login.php">Iniciar sesión</a>
+            <a href="/register.php">Crear cuenta</a>
+        <?php endif; ?>
+    </nav>
+</div>
+
 <div id="toast-container"></div>
 <main class="container main-content">

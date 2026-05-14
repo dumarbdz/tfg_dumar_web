@@ -205,3 +205,39 @@ document.addEventListener('click', function (e) {
         document.activeElement?.blur();
     }
 });
+
+// ── Menú hamburguesa móvil ──
+(function () {
+    const btn  = document.getElementById('nav-hamburger');
+    const menu = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
+
+    function openMenu() {
+        btn.classList.add('is-open');
+        menu.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        menu.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+        btn.classList.remove('is-open');
+        menu.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        menu.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    btn.addEventListener('click', function () {
+        btn.classList.contains('is-open') ? closeMenu() : openMenu();
+    });
+
+    // Cerrar al hacer clic en un enlace del menú móvil
+    menu.addEventListener('click', function (e) {
+        if (e.target.tagName === 'A') closeMenu();
+    });
+
+    // Cerrar al hacer resize a escritorio
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 640) closeMenu();
+    });
+})();
