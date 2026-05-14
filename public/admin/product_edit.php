@@ -45,7 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($brand === '' || $model === '' || $price <= 0) {
             $err = 'Continente, selección y precio son obligatorios.';
         } else {
-            $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $brand . '-' . $model));
+            $slugBase = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $brand . '-' . $model));
+            $slugBase = trim($slugBase, '-');
+            $slug     = $slugBase;
+            $stSlug   = $pdo->prepare('SELECT COUNT(*) FROM productos WHERE slug = ? AND id != ?');
+            $suffix   = 1;
+            while (true) {
+                $stSlug->execute([$slug, $isNew ? 0 : $id]);
+                if ((int)$stSlug->fetchColumn() === 0) break;
+                $slug = $slugBase . '-' . (++$suffix);
+            }
             if ($isNew) {
                 $st = $pdo->prepare(
                     'INSERT INTO productos (continente, seleccion, slug, descripcion, precio, imagen, activo)
