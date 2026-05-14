@@ -80,45 +80,45 @@ foreach (cart_items() as $ci) {
             </div>
 
             <!-- Botón hamburguesa (solo móvil) -->
-            <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" type="button">
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Abrir menú" aria-expanded="false" type="button">
                 <span></span><span></span><span></span>
             </button>
 
         </nav>
     </div>
-</header>
 
-<!-- Panel menú móvil -->
-<div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Menú de navegación">
-    <form class="mobile-search" method="get" action="/catalog.php" role="search">
-        <input type="search" name="q" placeholder="Buscar selección, continente…" autocomplete="off">
-        <button type="submit">Buscar</button>
-    </form>
-    <nav class="mobile-nav" aria-label="Navegación móvil">
-        <p class="mobile-nav-section">Catálogo</p>
-        <a href="/catalog.php">Ver todo el catálogo</a>
-        <a href="/catalog.php?brand=Europa">Europa</a>
-        <a href="/catalog.php?brand=Sudam%C3%A9rica">Sudamérica</a>
-        <a href="/catalog.php?brand=%C3%81frica">África</a>
-        <a href="/catalog.php?brand=Asia">Asia</a>
-        <div class="mobile-nav-divider"></div>
-        <?php if ($user): ?>
-            <p class="mobile-nav-section"><?= h($user['name']) ?></p>
-            <a href="/mi-cuenta.php">Mis datos</a>
-            <a href="/orders.php">Mis pedidos</a>
-            <a href="/wishlist.php">Favoritos</a>
-            <?php if ($user['is_admin']): ?>
-                <a href="/admin/" class="mobile-nav-admin">Admin</a>
-            <?php endif; ?>
+    <!-- Panel menú móvil (DENTRO del header para no afectar al contenido de la página) -->
+    <div class="mobile-menu" id="mobile-menu">
+        <form class="mobile-search" method="get" action="/catalog.php" role="search">
+            <input type="search" name="q" placeholder="Buscar selección, continente…" autocomplete="off">
+            <button type="submit">Buscar</button>
+        </form>
+        <nav class="mobile-nav">
+            <p class="mobile-nav-section">Catálogo</p>
+            <a href="/catalog.php">Ver todo el catálogo</a>
+            <a href="/catalog.php?brand=Europa">Europa</a>
+            <a href="/catalog.php?brand=Sudam%C3%A9rica">Sudamérica</a>
+            <a href="/catalog.php?brand=%C3%81frica">África</a>
+            <a href="/catalog.php?brand=Asia">Asia</a>
             <div class="mobile-nav-divider"></div>
-            <a href="/logout.php" class="mobile-nav-danger">Cerrar sesión</a>
-        <?php else: ?>
-            <p class="mobile-nav-section">Mi cuenta</p>
-            <a href="/login.php">Iniciar sesión</a>
-            <a href="/register.php">Crear cuenta</a>
-        <?php endif; ?>
-    </nav>
-</div>
+            <?php if ($user): ?>
+                <p class="mobile-nav-section"><?= h($user['name']) ?></p>
+                <a href="/mi-cuenta.php">Mis datos</a>
+                <a href="/orders.php">Mis pedidos</a>
+                <a href="/wishlist.php">Favoritos</a>
+                <?php if ($user['is_admin']): ?>
+                    <a href="/admin/" class="mobile-nav-admin">Admin</a>
+                <?php endif; ?>
+                <div class="mobile-nav-divider"></div>
+                <a href="/logout.php" class="mobile-nav-danger">Cerrar sesión</a>
+            <?php else: ?>
+                <p class="mobile-nav-section">Mi cuenta</p>
+                <a href="/login.php">Iniciar sesión</a>
+                <a href="/register.php">Crear cuenta</a>
+            <?php endif; ?>
+        </nav>
+    </div>
 
+</header>
 <div id="toast-container"></div>
 <main class="container main-content">
