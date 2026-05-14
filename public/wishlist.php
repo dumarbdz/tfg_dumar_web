@@ -50,7 +50,7 @@ require dirname(__DIR__) . '/includes/header.php';
                         <input type="hidden" name="_csrf" value="<?= h(csrf_token()) ?>">
                         <input type="hidden" name="product_id" value="<?= (int) $p['id'] ?>">
                         <input type="hidden" name="next" value="/wishlist.php">
-                        <button type="submit" class="btn btn-small btn-outline" title="Quitar de favoritos">🗑</button>
+                        <button type="submit" class="btn btn-small btn-outline">Quitar</button>
                     </form>
                 </div>
             </li>

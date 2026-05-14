@@ -30,21 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Las contraseñas no coinciden.';
         } else {
             $pdo = get_pdo();
-            try {
-                $hash = password_hash($pass, PASSWORD_DEFAULT);
-                $st = $pdo->prepare('INSERT INTO usuarios (email, contrasena_hash, nombre) VALUES (?, ?, ?)');
-                $st->execute([$email, $hash, $name]);
-                $uid = (int) $pdo->lastInsertId();
-                session_regenerate_id(true);
-                $_SESSION['user_id']       = $uid;
-                $_SESSION['user_email']    = $email;
-                $_SESSION['user_name']     = $name;
-                $_SESSION['user_is_admin'] = false;
-                header('Location: ' . $next);
-                exit;
-            } catch (PDOException $e) {
-                $dup = isset($e->errorInfo[0]) && $e->errorInfo[0] === '23505';
-                $error = $dup ? 'Ese email ya está registrado.' : 'No se pudo crear la cuenta. Inténtalo más tarde.';
+            $stCheck = $pdo->prepare('SELECT 1 FROM usuarios WHERE email = ?');
+            $stCheck->execute([$email]);
+            if ($stCheck->fetchColumn()) {
+                $error = 'Ese email ya está registrado.';
+            } else {
+                try {
+                    $hash = password_hash($pass, PASSWORD_DEFAULT);
+                    $st = $pdo->prepare('INSERT INTO usuarios (email, contrasena_hash, nombre) VALUES (?, ?, ?)');
+                    $st->execute([$email, $hash, $name]);
+                    $uid = (int) $pdo->lastInsertId();
+                    session_regenerate_id(true);
+                    $_SESSION['user_id']       = $uid;
+                    $_SESSION['user_email']    = $email;
+                    $_SESSION['user_name']     = $name;
+                    $_SESSION['user_is_admin'] = false;
+                    send_welcome_email($email, $name);
+                    header('Location: ' . $next);
+                    exit;
+                } catch (PDOException $e) {
+                    $error = 'No se pudo crear la cuenta. Inténtalo más tarde.';
+                }
             }
         }
     }

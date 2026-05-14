@@ -199,3 +199,9 @@ function dismissToast(t) {
     }
 
 })();
+
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.nav-item')) {
+        document.activeElement?.blur();
+    }
+});

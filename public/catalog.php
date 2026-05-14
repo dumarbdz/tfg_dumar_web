@@ -7,7 +7,6 @@ $q          = isset($_GET['q'])         ? trim((string) $_GET['q'])     : '';
 $brand      = isset($_GET['brand'])     ? trim((string) $_GET['brand']) : '';
 $model      = isset($_GET['model'])     ? trim((string) $_GET['model']) : '';
 $size       = isset($_GET['size'])      ? trim((string) $_GET['size'])  : '';
-$color_name = isset($_GET['color'])     ? trim((string) $_GET['color']) : '';
 $price_min  = isset($_GET['price_min']) && $_GET['price_min'] !== '' ? (float) $_GET['price_min'] : 0.0;
 $price_max  = isset($_GET['price_max']) && $_GET['price_max'] !== '' ? (float) $_GET['price_max'] : 200.0;
 $page       = max(1, (int) ($_GET['page'] ?? 1));
@@ -15,67 +14,7 @@ $page       = max(1, (int) ($_GET['page'] ?? 1));
 $allowedBrands = ['', 'Europa', 'Sudamérica', 'África', 'Asia'];
 if (!in_array($brand, $allowedBrands, true)) $brand = '';
 
-$allowedColorNames = ['Amarillo','Azul','Blanco','Granate','Gris','Morado','Negro','Naranja','Rojo','Verde'];
-if (!in_array($color_name, $allowedColorNames, true)) $color_name = '';
-
 $pdo = get_pdo();
-
-// ── Mapa hex → grupo de color (debe ir ANTES de construir el WHERE) ──
-function hex_to_color_name(string $hex): string
-{
-    $hex = ltrim(strtolower($hex), '#');
-    if (strlen($hex) !== 6) return 'Otro';
-    $r = hexdec(substr($hex, 0, 2));
-    $g = hexdec(substr($hex, 2, 2));
-    $b = hexdec(substr($hex, 4, 2));
-
-    $max = max($r, $g, $b);
-    $min = min($r, $g, $b);
-    if ($max < 30)  return 'Negro';
-    if ($min > 220) return 'Blanco';
-    $delta = $max - $min;
-    if ($delta < 25 && $max < 160) return 'Gris';
-    if ($delta === 0) return 'Gris';
-
-    $hue = 0.0;
-    if ($max === $r)      $hue = 60.0 * fmod(($g - $b) / $delta, 6);
-    elseif ($max === $g)  $hue = 60.0 * (($b - $r) / $delta + 2);
-    else                  $hue = 60.0 * (($r - $g) / $delta + 4);
-    if ($hue < 0) $hue += 360;
-
-    $sat = $delta / $max;
-    if ($sat < 0.2) return $r > 200 ? 'Blanco' : 'Gris';
-
-    if ($hue < 20 || $hue >= 345) return 'Rojo';
-    if ($hue < 45)  return 'Naranja';
-    if ($hue < 70)  return 'Amarillo';
-    if ($hue < 200) return 'Verde';
-    if ($hue < 260) return 'Azul';
-    if ($hue < 290) return 'Morado';
-    return 'Granate';
-}
-
-// Cargar todos los hex de la BD y construir el mapa
-$hexToName   = [];
-$availColors = [];
-try {
-    $stColors = $pdo->query(
-        'SELECT DISTINCT color1, color2 FROM productos WHERE activo = TRUE AND color1 IS NOT NULL'
-    );
-    $groupSet = [];
-    foreach ($stColors->fetchAll() as $row) {
-        foreach (['color1', 'color2'] as $col) {
-            $hex = strtolower(trim((string)($row[$col] ?? '')));
-            if ($hex !== '') {
-                $name = hex_to_color_name($hex);
-                $hexToName[$hex] = $name;
-                $groupSet[$name] = true;
-            }
-        }
-    }
-    $availColors = array_keys($groupSet);
-    sort($availColors);
-} catch (\PDOException) {}
 
 // ── Construir condiciones WHERE ──
 $conditions = ['p.activo = TRUE'];
@@ -107,14 +46,6 @@ if ($price_max < 200) {
     $conditions[] = 'p.precio <= ?';
     $params[]      = $price_max;
 }
-if ($color_name !== '' && $hexToName !== []) {
-    $matchHexes = array_keys(array_filter($hexToName, fn($n) => $n === $color_name));
-    if ($matchHexes !== []) {
-        $ph = implode(',', array_fill(0, count($matchHexes), '?'));
-        $conditions[] = "(LOWER(p.color1) IN ($ph) OR LOWER(p.color2) IN ($ph))";
-        array_push($params, ...$matchHexes, ...$matchHexes);
-    }
-}
 
 $where = 'WHERE ' . implode(' AND ', $conditions);
 
@@ -130,7 +61,6 @@ $offset     = ($page - 1) * $perPage;
 $st = $pdo->prepare(
     "SELECT DISTINCT p.id, p.continente AS brand, p.seleccion AS model, p.slug,
             p.descripcion AS description, p.precio AS price, p.imagen AS image_path,
-            p.color1, p.color2,
             (SELECT SUM(cantidad) FROM stock WHERE producto_id = p.id) AS total_stock
      FROM productos p $where ORDER BY p.continente, p.seleccion LIMIT $perPage OFFSET $offset"
 );
@@ -142,7 +72,6 @@ if ($q !== '')         $urlParams['q']         = $q;
 if ($brand !== '')     $urlParams['brand']     = $brand;
 if ($model !== '')     $urlParams['model']     = $model;
 if ($size !== '')      $urlParams['size']      = $size;
-if ($color_name !== '') $urlParams['color']    = $color_name;
 if ($price_min > 0)    $urlParams['price_min'] = $price_min;
 if ($price_max < 200)  $urlParams['price_max'] = $price_max;
 
@@ -240,21 +169,7 @@ require dirname(__DIR__) . '/includes/header.php';
                 </label>
             </div>
 
-            <?php if ($availColors !== []): ?>
-            <label for="filter-color">
-                Color
-                <select id="filter-color" name="color">
-                    <option value="">Todos</option>
-                    <?php foreach ($availColors as $cName): ?>
-                        <option value="<?= h($cName) ?>" <?= $color_name === $cName ? 'selected' : '' ?>>
-                            <?= h($cName) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-            <?php endif; ?>
-
-            <button type="submit" class="btn btn-primary">Aplicar</button>
+<button type="submit" class="btn btn-primary">Aplicar</button>
         </form>
 
         </div><!-- /.catalog-toolbar -->
@@ -286,7 +201,7 @@ require dirname(__DIR__) . '/includes/header.php';
                             <input type="hidden" name="product_id" value="<?= (int) $p['id'] ?>">
                             <input type="hidden" name="next" value="<?= h($_SERVER['REQUEST_URI']) ?>">
                             <button type="submit" class="btn btn-small btn-outline" style="width:100%">
-                                <?= isset($wishlistIds[(int) $p['id']]) ? '❤ En favoritos' : '♡ Guardar' ?>
+                                <?= isset($wishlistIds[(int) $p['id']]) ? 'En favoritos' : 'Guardar' ?>
                             </button>
                         </form>
                         <?php endif; ?>
@@ -298,7 +213,7 @@ require dirname(__DIR__) . '/includes/header.php';
                 <nav class="pagination" aria-label="Páginas del catálogo">
                     <?php if ($page > 1): ?>
                         <a href="/catalog.php?<?= h(http_build_query(array_merge($urlParams, ['page' => $page - 1]))) ?>"
-                           class="btn btn-outline btn-small">← Anterior</a>
+                           class="btn btn-outline btn-small">Anterior</a>
                     <?php endif; ?>
 
                     <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
@@ -311,7 +226,7 @@ require dirname(__DIR__) . '/includes/header.php';
 
                     <?php if ($page < $totalPages): ?>
                         <a href="/catalog.php?<?= h(http_build_query(array_merge($urlParams, ['page' => $page + 1]))) ?>"
-                           class="btn btn-outline btn-small">Siguiente →</a>
+                           class="btn btn-outline btn-small">Siguiente</a>
                     <?php endif; ?>
                 </nav>
             <?php endif; ?>

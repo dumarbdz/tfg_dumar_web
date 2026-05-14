@@ -81,21 +81,21 @@ require dirname(__DIR__) . '/includes/header.php';
 
         <ul class="contact-channels">
             <li class="contact-channel">
-                <span class="contact-channel-icon">📦</span>
+                <span class="contact-channel-icon">&#128666;</span>
                 <div>
                     <strong>Seguimiento de pedidos</strong>
                     <span>Consulta el estado en <a href="/orders.php">Mis pedidos</a></span>
                 </div>
             </li>
             <li class="contact-channel">
-                <span class="contact-channel-icon">⏱</span>
+                <span class="contact-channel-icon">&#9201;</span>
                 <div>
                     <strong>Tiempo de respuesta</strong>
                     <span>Respondemos en menos de 24&nbsp;h en días laborables</span>
                 </div>
             </li>
             <li class="contact-channel">
-                <span class="contact-channel-icon">↩</span>
+                <span class="contact-channel-icon">&#8617;</span>
                 <div>
                     <strong>Devoluciones</strong>
                     <span>Plazo de 14 días desde la recepción del pedido</span>
