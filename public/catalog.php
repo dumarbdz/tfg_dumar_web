@@ -153,7 +153,12 @@ require dirname(__DIR__) . '/includes/header.php';
 
             <label for="filter-size">
                 Talla
-                <input id="filter-size" type="text" name="size" placeholder="S, M o L" value="<?= h($size) ?>" maxlength="3">
+                <select id="filter-size" name="size">
+                    <option value="">Todas</option>
+                    <?php foreach (['XS','S','M','L','XL','XXL'] as $sz): ?>
+                        <option value="<?= $sz ?>" <?= $size === $sz ? 'selected' : '' ?>><?= $sz ?></option>
+                    <?php endforeach; ?>
+                </select>
             </label>
 
             <div class="filter-price-row">
