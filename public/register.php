@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: ' . $next);
                 exit;
             } catch (PDOException $e) {
-                $dup = isset($e->errorInfo[1]) && (string) $e->errorInfo[1] === '1062';
+                $dup = isset($e->errorInfo[0]) && $e->errorInfo[0] === '23505';
                 $error = $dup ? 'Ese email ya está registrado.' : 'No se pudo crear la cuenta. Inténtalo más tarde.';
             }
         }

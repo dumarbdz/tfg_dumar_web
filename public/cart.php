@@ -50,7 +50,7 @@ if ($items !== []) {
 
     $stProds = $pdo->prepare(
         "SELECT id, continente AS brand, seleccion AS model, precio AS price, imagen AS image_path
-         FROM productos WHERE id IN ($placeholders) AND activo = 1"
+         FROM productos WHERE id IN ($placeholders) AND activo = TRUE"
     );
     $stProds->execute($ids);
     $productsById = [];

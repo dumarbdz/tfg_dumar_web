@@ -198,7 +198,20 @@ function smtp_send(string $to, string $subject, string $body): bool
     if ($cfg === null) {
         $path = dirname(__DIR__) . '/config/config.local.php';
         $all  = is_file($path) ? (require $path) : [];
-        $cfg  = (isset($all['smtp']) && !empty($all['smtp']['host'])) ? $all['smtp'] : false;
+        if (isset($all['smtp']) && !empty($all['smtp']['host'])) {
+            $cfg = $all['smtp'];
+        } elseif (getenv('SMTP_HOST')) {
+            $cfg = [
+                'host'  => (string) getenv('SMTP_HOST'),
+                'port'  => (int) (getenv('SMTP_PORT') ?: 587),
+                'user'  => (string) (getenv('SMTP_USER') ?: ''),
+                'pass'  => (string) (getenv('SMTP_PASS') ?: ''),
+                'from'  => (string) (getenv('SMTP_FROM') ?: ''),
+                'admin' => (string) (getenv('ADMIN_EMAIL') ?: ''),
+            ];
+        } else {
+            $cfg = false;
+        }
     }
     if ($cfg === false) {
         return false;

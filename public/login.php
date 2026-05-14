@@ -65,9 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $pdo->prepare(
                         'INSERT INTO intentos_login (ip, intentos) VALUES (?, 1)
-                         ON DUPLICATE KEY UPDATE
-                             intentos = intentos + 1,
-                             bloqueado_hasta = IF(intentos + 1 >= 5, DATE_ADD(NOW(), INTERVAL 1 MINUTE), NULL)'
+                         ON CONFLICT (ip) DO UPDATE SET
+                             intentos = intentos_login.intentos + 1,
+                             bloqueado_hasta = CASE WHEN intentos_login.intentos + 1 >= 5
+                                 THEN NOW() + INTERVAL \'1 minute\' ELSE NULL END,
+                             actualizado_en = NOW()'
                     )->execute([$ip]);
 
                     // Al llegar exactamente a 5 intentos, avisar al dueño de la cuenta

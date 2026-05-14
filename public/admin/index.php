@@ -6,9 +6,9 @@ require __DIR__ . '/admin_layout.php';
 
 $pdo = get_pdo();
 
-$totalProducts  = (int) $pdo->query('SELECT COUNT(*) FROM productos WHERE activo = 1')->fetchColumn();
+$totalProducts  = (int) $pdo->query('SELECT COUNT(*) FROM productos WHERE activo = TRUE')->fetchColumn();
 $totalOrders    = (int) $pdo->query('SELECT COUNT(*) FROM pedidos')->fetchColumn();
-$totalUsers     = (int) $pdo->query('SELECT COUNT(*) FROM usuarios WHERE es_admin = 0')->fetchColumn();
+$totalUsers     = (int) $pdo->query('SELECT COUNT(*) FROM usuarios WHERE es_admin = FALSE')->fetchColumn();
 $totalRevenue   = (float) ($pdo->query('SELECT COALESCE(SUM(total),0) FROM pedidos')->fetchColumn());
 
 $recentOrders = $pdo->query(
@@ -22,7 +22,7 @@ $recentOrders = $pdo->query(
 $salesByDay = $pdo->query(
     "SELECT DATE(creado_en) AS dia, COUNT(*) AS pedidos, SUM(total) AS ingresos
      FROM pedidos
-     WHERE creado_en >= DATE_SUB(CURDATE(), INTERVAL 29 DAY)
+     WHERE creado_en >= CURRENT_DATE - INTERVAL '29 days'
      GROUP BY DATE(creado_en)
      ORDER BY dia ASC"
 )->fetchAll();

@@ -60,7 +60,7 @@ $hexToName   = [];
 $availColors = [];
 try {
     $stColors = $pdo->query(
-        'SELECT DISTINCT color1, color2 FROM productos WHERE activo = 1 AND color1 IS NOT NULL'
+        'SELECT DISTINCT color1, color2 FROM productos WHERE activo = TRUE AND color1 IS NOT NULL'
     );
     $groupSet = [];
     foreach ($stColors->fetchAll() as $row) {
@@ -78,7 +78,7 @@ try {
 } catch (\PDOException) {}
 
 // ── Construir condiciones WHERE ──
-$conditions = ['p.activo = 1'];
+$conditions = ['p.activo = TRUE'];
 $params     = [];
 
 if ($q !== '') {

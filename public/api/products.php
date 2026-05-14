@@ -8,7 +8,7 @@ function handle_products(?int $id): never {
         $st = $pdo->prepare(
             'SELECT p.id, p.continente AS brand, p.seleccion AS model, p.slug,
                     p.descripcion AS description, p.precio AS price, p.imagen AS image_path, p.activo AS active
-             FROM productos p WHERE p.id = ? AND p.activo = 1'
+             FROM productos p WHERE p.id = ? AND p.activo = TRUE'
         );
         $st->execute([$id]);
         $product = $st->fetch(PDO::FETCH_ASSOC);
@@ -24,7 +24,7 @@ function handle_products(?int $id): never {
     $st = $pdo->query(
         'SELECT p.id, p.continente AS brand, p.seleccion AS model, p.slug,
                 p.descripcion AS description, p.precio AS price, p.imagen AS image_path, p.activo AS active
-         FROM productos p WHERE p.activo = 1 ORDER BY p.continente, p.seleccion'
+         FROM productos p WHERE p.activo = TRUE ORDER BY p.continente, p.seleccion'
     );
     $products = $st->fetchAll(PDO::FETCH_ASSOC);
     foreach ($products as &$p) {
@@ -37,7 +37,7 @@ function handle_products(?int $id): never {
 }
 
 function fetch_stock(PDO $pdo, int $productId): array {
-    $st = $pdo->prepare("SELECT talla AS size, cantidad AS quantity FROM stock WHERE producto_id = ? ORDER BY FIELD(talla,'XS','S','M','L','XL','XXL')");
+    $st = $pdo->prepare("SELECT talla AS size, cantidad AS quantity FROM stock WHERE producto_id = ? ORDER BY CASE talla WHEN 'XS' THEN 1 WHEN 'S' THEN 2 WHEN 'M' THEN 3 WHEN 'L' THEN 4 WHEN 'XL' THEN 5 WHEN 'XXL' THEN 6 ELSE 7 END");
     $st->execute([$productId]);
     $result = [];
     foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) {
