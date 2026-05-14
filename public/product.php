@@ -216,7 +216,7 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
                             <?= $qty <= 0 ? 'disabled' : '' ?>>
                         <?= h((string) $s['size']) ?>
                         <?php if ($qty > 0 && $qty <= 3): ?>
-                            <span class="size-chip-badge">¡<?= $qty ?> ud<?= $qty > 1 ? 's' : '' ?>!</span>
+                            <span class="size-chip-badge">¡Últimas!</span>
                         <?php elseif ($qty <= 0): ?>
                             <span class="size-chip-badge">Agot.</span>
                         <?php endif; ?>

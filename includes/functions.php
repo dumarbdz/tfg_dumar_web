@@ -324,6 +324,16 @@ function send_order_confirmation_email(string $customerEmail, int $orderId, floa
     return $ok;
 }
 
+function send_welcome_email(string $to, string $name): bool
+{
+    $subject = 'Bienvenido/a a Mundial Store';
+    $body  = "Hola {$name},\r\n\r\n";
+    $body .= "¡Gracias por registrarte en Mundial Store!\r\n";
+    $body .= "Ya puedes explorar nuestro catálogo de camisetas del Mundial 2026.\r\n\r\n";
+    $body .= "— Mundial Store · Camisetas del Mundial 2026\r\n";
+    return smtp_send($to, $subject, $body);
+}
+
 function send_password_reset_email(string $to, string $resetUrl): bool
 {
     $subject = 'Mundial Store — Restablecer contraseña';
