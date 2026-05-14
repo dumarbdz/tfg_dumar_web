@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $price       = (float)str_replace(',', '.', (string)($_POST['price'] ?? '0'));
         $description = trim((string)($_POST['description'] ?? ''));
         $imagePath   = trim((string)($_POST['image_path']  ?? ''));
-        $active      = isset($_POST['active']);
+        $activePg    = isset($_POST['active']) ? 'TRUE' : 'FALSE';
 
         if ($brand === '' || $model === '' || $price <= 0) {
             $err = 'Continente, selección y precio son obligatorios.';
@@ -49,14 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($isNew) {
                 $st = $pdo->prepare(
                     'INSERT INTO productos (continente, seleccion, slug, descripcion, precio, imagen, activo)
-                     VALUES (?, ?, ?, ?, ?, ?, ?)'
+                     VALUES (?, ?, ?, ?, ?, ?, ?)
+                     RETURNING id'
                 );
-                $st->execute([$brand, $model, $slug, $description, $price, $imagePath, $active]);
-                $id = (int) $pdo->lastInsertId();
+                $st->execute([$brand, $model, $slug, $description, $price, $imagePath, $activePg]);
+                $id = (int) $st->fetchColumn();
             } else {
                 $pdo->prepare(
                     'UPDATE productos SET continente=?, seleccion=?, slug=?, descripcion=?, precio=?, imagen=?, activo=? WHERE id=?'
-                )->execute([$brand, $model, $slug, $description, $price, $imagePath, $active, $id]);
+                )->execute([$brand, $model, $slug, $description, $price, $imagePath, $activePg, $id]);
             }
 
             $stUpsert = $pdo->prepare(
@@ -82,7 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$f = $product ?? ['continente'=>'','seleccion'=>'','precio'=>'','descripcion'=>'','imagen'=>'','activo'=>1];
+$f = $product ?? ['continente'=>'','seleccion'=>'','precio'=>'','descripcion'=>'','imagen'=>'','activo'=>'t'];
+$fActivo = !empty($f['activo']) && $f['activo'] !== 'f' && $f['activo'] !== '0' && $f['activo'] !== false;
 ?>
 
 <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
@@ -115,7 +117,7 @@ $f = $product ?? ['continente'=>'','seleccion'=>'','precio'=>'','descripcion'=>'
             <input type="number" name="price" required min="0.01" step="0.01" value="<?= h((string)$f['precio']) ?>">
         </label>
         <label style="justify-content:flex-end;flex-direction:row;align-items:center;gap:.5rem;padding-top:1.4rem">
-            <input type="checkbox" name="active" value="1" <?= $f['activo'] ? 'checked' : '' ?>>
+            <input type="checkbox" name="active" value="1" <?= $fActivo ? 'checked' : '' ?>>
             Producto activo (visible en tienda)
         </label>
     </div>
