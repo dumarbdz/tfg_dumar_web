@@ -23,7 +23,7 @@ $like = '%' . $q . '%';
 $st = $pdo->prepare(
     'SELECT id, seleccion, continente, slug
      FROM productos
-     WHERE activo = 1 AND (seleccion LIKE ? OR continente LIKE ?)
+     WHERE activo = TRUE AND (seleccion LIKE ? OR continente LIKE ?)
      ORDER BY
          CASE WHEN seleccion LIKE ? THEN 0 ELSE 1 END,
          seleccion

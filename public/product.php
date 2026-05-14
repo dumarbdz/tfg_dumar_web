@@ -12,7 +12,7 @@ if ($id <= 0) {
 $pdo     = get_pdo();
 $user    = current_user();
 
-$st = $pdo->prepare('SELECT * FROM productos WHERE id = ? AND activo = 1');
+$st = $pdo->prepare('SELECT * FROM productos WHERE id = ? AND activo = TRUE');
 $st->execute([$id]);
 $product = $st->fetch();
 if (!$product) {
@@ -24,7 +24,7 @@ if (!$product) {
     exit;
 }
 
-$st2 = $pdo->prepare("SELECT talla AS size, cantidad AS quantity FROM stock WHERE producto_id = ? ORDER BY FIELD(talla, 'XS', 'S', 'M', 'L', 'XL', 'XXL')");
+$st2 = $pdo->prepare("SELECT talla AS size, cantidad AS quantity FROM stock WHERE producto_id = ? ORDER BY CASE talla WHEN 'XS' THEN 1 WHEN 'S' THEN 2 WHEN 'M' THEN 3 WHEN 'L' THEN 4 WHEN 'XL' THEN 5 WHEN 'XXL' THEN 6 ELSE 7 END");
 $st2->execute([$id]);
 $stockRows = $st2->fetchAll();
 

@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $price       = (float)str_replace(',', '.', (string)($_POST['price'] ?? '0'));
         $description = trim((string)($_POST['description'] ?? ''));
         $imagePath   = trim((string)($_POST['image_path']  ?? ''));
-        $active      = isset($_POST['active']) ? 1 : 0;
+        $active      = isset($_POST['active']);
 
         if ($brand === '' || $model === '' || $price <= 0) {
             $err = 'Continente, selección y precio son obligatorios.';
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stUpsert = $pdo->prepare(
                 'INSERT INTO stock (producto_id, talla, cantidad)
                  VALUES (?, ?, ?)
-                 ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad)'
+                 ON CONFLICT (producto_id, talla) DO UPDATE SET cantidad = EXCLUDED.cantidad'
             );
             foreach ($sizes as $sz) {
                 $qty = max(0, (int)($_POST['stock'][$sz] ?? 0));

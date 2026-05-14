@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_active'])) {
         $err = 'Sesión inválida.';
     } else {
         $pid    = (int) $_POST['product_id'];
-        $active = (int) $_POST['new_active'];
+        $active = (bool) (int) $_POST['new_active'];
         $pdo->prepare('UPDATE productos SET activo = ? WHERE id = ?')->execute([$active, $pid]);
         $msg = $active ? 'Producto activado.' : 'Producto desactivado.';
     }

@@ -23,7 +23,7 @@ if ($productId > 0) {
             ->execute([$user['id'], $productId]);
         flash_set('Eliminado de favoritos.', 'info');
     } else {
-        $pdo->prepare('INSERT IGNORE INTO favoritos (usuario_id, producto_id) VALUES (?, ?)')
+        $pdo->prepare('INSERT INTO favoritos (usuario_id, producto_id) VALUES (?, ?) ON CONFLICT DO NOTHING')
             ->execute([$user['id'], $productId]);
         flash_set('Guardado en favoritos. ❤');
     }

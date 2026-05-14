@@ -27,7 +27,7 @@ $subtotal = 0.0;
 foreach ($items as $line) {
     $st = $pdo->prepare('SELECT p.id, p.continente AS brand, p.seleccion AS model, p.precio AS price,
         (SELECT cantidad FROM stock WHERE producto_id = p.id AND talla = ?) AS stock_qty
-        FROM productos p WHERE p.id = ? AND p.activo = 1');
+        FROM productos p WHERE p.id = ? AND p.activo = TRUE');
     $st->execute([$line['size'], $line['product_id']]);
     $p = $st->fetch();
     if (!$p) {

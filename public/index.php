@@ -19,8 +19,13 @@ $stFeat = $pdo->query(
     "SELECT id, continente AS brand, seleccion AS model, slug,
             descripcion AS description, precio AS price, imagen AS image_path
      FROM productos
-     WHERE activo = 1
-     ORDER BY FIELD(seleccion,'España','Brasil','Argentina','Francia','Alemania','Japón','Marruecos','Nigeria','Colombia','Italia','Portugal','Rusia')
+     WHERE activo = TRUE
+     ORDER BY CASE seleccion
+         WHEN 'España'    THEN 1 WHEN 'Brasil'    THEN 2 WHEN 'Argentina' THEN 3
+         WHEN 'Francia'   THEN 4 WHEN 'Alemania'  THEN 5 WHEN 'Japón'     THEN 6
+         WHEN 'Marruecos' THEN 7 WHEN 'Nigeria'   THEN 8 WHEN 'Colombia'  THEN 9
+         WHEN 'Italia'    THEN 10 WHEN 'Portugal' THEN 11 WHEN 'Rusia'    THEN 12
+         ELSE 99 END
      LIMIT 8"
 );
 $featured = $stFeat ? $stFeat->fetchAll() : [];

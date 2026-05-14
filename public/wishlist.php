@@ -11,7 +11,7 @@ $st = $pdo->prepare(
     'SELECT p.id, p.continente AS brand, p.seleccion AS model, p.precio AS price, p.imagen AS image_path
      FROM favoritos f
      JOIN productos p ON p.id = f.producto_id
-     WHERE f.usuario_id = ? AND p.activo = 1
+     WHERE f.usuario_id = ? AND p.activo = TRUE
      ORDER BY f.creado_en DESC'
 );
 $st->execute([$user['id']]);
