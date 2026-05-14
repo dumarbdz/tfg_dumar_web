@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_active'])) {
     } else {
         $pid    = (int) $_POST['product_id'];
         $active = (bool) (int) $_POST['new_active'];
-        $pdo->prepare('UPDATE productos SET activo = ? WHERE id = ?')->execute([$active, $pid]);
+        $pdo->prepare('UPDATE productos SET activo = ? WHERE id = ?')->execute([$active ? 'TRUE' : 'FALSE', $pid]);
         $msg = $active ? 'Producto activado.' : 'Producto desactivado.';
     }
 }
