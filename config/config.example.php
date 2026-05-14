@@ -25,7 +25,7 @@ return [
         'pass'    => '',
         'charset' => 'utf8mb4',
     ],
-    'api_key'    => 'mws_7f4a2b9e1c3d6f8a0b5e2c7d4f1a9b3e',
+    'api_key'    => 'CHANGE_ME_pon_aqui_tu_api_key',
     'smtp' => [
         'host' => 'smtp-relay.brevo.com',
         'port' => 587,
