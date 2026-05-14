@@ -175,11 +175,11 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
         <h1><?= h((string) $product['seleccion']) ?></h1>
 
         <?php if ((int)$ratingStats['total'] > 0): ?>
-            <p style="margin:.25rem 0 0;display:flex;align-items:center;gap:.5rem">
-                <span style="color:#c47f00;font-size:1.1rem;letter-spacing:2px"><?= stars((float)$ratingStats['media']) ?></span>
-                <strong style="color:#c47f00"><?= $ratingStats['media'] ?></strong>
-                <a href="#valoraciones" style="font-size:.82rem;color:var(--muted);font-weight:400">(<?= (int)$ratingStats['total'] ?> valoraci<?= (int)$ratingStats['total'] === 1 ? 'ón' : 'ones' ?>)</a>
-            </p>
+            <a href="#valoraciones" class="product-rating-summary">
+                <span class="product-rating-stars"><?= stars((float)$ratingStats['media']) ?></span>
+                <strong class="product-rating-score"><?= $ratingStats['media'] ?></strong>
+                <span class="product-rating-count">(<?= (int)$ratingStats['total'] ?> valoraci<?= (int)$ratingStats['total'] === 1 ? 'ón' : 'ones' ?>)</span>
+            </a>
         <?php endif; ?>
 
         <div class="product-price-block">
@@ -262,28 +262,28 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
 </article>
 
 <!-- ── VALORACIONES ───────────────────────────────────────── -->
-<section id="valoraciones" class="reviews-section" style="margin-top:3rem;max-width:760px">
-    <h2 class="h3" style="margin-bottom:1.5rem">Valoraciones</h2>
+<section id="valoraciones" class="reviews-section">
+    <h2 class="reviews-title">Valoraciones</h2>
 
     <?php if ($canReview): ?>
-        <div style="background:#f0f7f3;border:1.5px solid #c3e0cf;border-radius:10px;padding:1.5rem;margin-bottom:2rem">
-            <p style="font-weight:700;margin:0 0 1rem;color:#052e1a">
-                <?= $alreadyReviewed ? '✏️ Editar tu valoración' : '⭐ Deja tu valoración' ?>
+        <div class="review-form-card">
+            <p class="review-form-heading">
+                <?= $alreadyReviewed ? 'Editar tu valoración' : 'Deja tu valoración' ?>
             </p>
             <form method="post" action="/product.php?id=<?= $id ?>">
                 <input type="hidden" name="_csrf" value="<?= h(csrf_token()) ?>">
                 <input type="hidden" name="submit_review" value="1">
-                <div class="star-picker" style="display:flex;gap:.5rem;margin-bottom:1rem;font-size:2rem;cursor:pointer">
+                <div class="star-picker" data-current="<?= $userReview ? (int)$userReview['puntuacion'] : 0 ?>">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <label style="cursor:pointer;color:<?= ($userReview && (int)$userReview['puntuacion'] >= $i) ? '#c47f00' : '#ccc' ?>">
-                            <input type="radio" name="puntuacion" value="<?= $i ?>" style="display:none"
-                                   <?= ($userReview && (int)$userReview['puntuacion'] === $i) ? 'checked' : '' ?>>★
+                        <label class="star-label<?= ($userReview && (int)$userReview['puntuacion'] >= $i) ? ' is-lit' : '' ?>" data-val="<?= $i ?>">
+                            <input type="radio" name="puntuacion" value="<?= $i ?>"
+                                   <?= ($userReview && (int)$userReview['puntuacion'] === $i) ? 'checked' : '' ?>>&#9733;
                         </label>
                     <?php endfor; ?>
                 </div>
-                <label style="display:block;margin-bottom:.75rem;font-size:.9rem;color:#3a4f3e;font-weight:600">
+                <label class="review-comment-label">
                     Comentario (opcional)
-                    <textarea name="comentario" rows="3" style="display:block;width:100%;margin-top:.35rem;padding:.6rem;border:1.5px solid #c3e0cf;border-radius:6px;font-size:.9rem;resize:vertical"><?= h((string)($userReview['comentario'] ?? '')) ?></textarea>
+                    <textarea name="comentario" rows="3" class="review-textarea"><?= h((string)($userReview['comentario'] ?? '')) ?></textarea>
                 </label>
                 <button type="submit" class="btn btn-primary">
                     <?= $alreadyReviewed ? 'Actualizar valoración' : 'Enviar valoración' ?>
@@ -291,27 +291,30 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
             </form>
         </div>
     <?php elseif ($user === null): ?>
-        <p class="muted" style="margin-bottom:2rem">
+        <p class="review-gate muted">
             <a href="/login.php?next=<?= rawurlencode('/product.php?id='.$id) ?>">Inicia sesión</a> y compra este producto para dejar una valoración.
         </p>
     <?php elseif (!$canReview): ?>
-        <p class="muted" style="margin-bottom:2rem">Solo los clientes que han comprado este producto pueden valorarlo.</p>
+        <p class="review-gate muted">Solo los clientes que han comprado este producto pueden valorarlo.</p>
     <?php endif; ?>
 
     <?php if ($reviews === []): ?>
         <p class="muted">Todavía no hay valoraciones para este producto.</p>
     <?php else: ?>
-        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:1rem">
+        <ul class="review-list">
             <?php foreach ($reviews as $r): ?>
-                <li style="background:#fff;border:1px solid #e0ebe4;border-radius:8px;padding:1rem 1.25rem">
-                    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem">
-                        <span style="color:#c47f00;font-size:1.1rem;letter-spacing:1px"><?= stars((float)$r['puntuacion']) ?></span>
-                        <strong style="font-size:.9rem"><?= h($r['autor']) ?></strong>
-                        <span class="muted" style="font-size:.78rem;margin-left:auto"><?= date('d/m/Y', strtotime($r['creado_en'])) ?></span>
+                <li class="review-card">
+                    <div class="review-avatar"><?= mb_strtoupper(mb_substr((string)$r['autor'], 0, 1)) ?></div>
+                    <div class="review-body">
+                        <div class="review-meta">
+                            <span class="review-stars"><?= stars((float)$r['puntuacion']) ?></span>
+                            <strong class="review-author"><?= h($r['autor']) ?></strong>
+                            <span class="review-date muted"><?= date('d/m/Y', strtotime($r['creado_en'])) ?></span>
+                        </div>
+                        <?php if ($r['comentario'] !== null && $r['comentario'] !== ''): ?>
+                            <p class="review-comment"><?= nl2br(h($r['comentario'])) ?></p>
+                        <?php endif; ?>
                     </div>
-                    <?php if ($r['comentario'] !== null && $r['comentario'] !== ''): ?>
-                        <p style="margin:0;font-size:.9rem;color:#3a4f3e"><?= nl2br(h($r['comentario'])) ?></p>
-                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -394,19 +397,26 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
 })();
 
 // Estrellas interactivas
-document.querySelectorAll('.star-picker label').forEach((lbl, idx, all) => {
-    lbl.addEventListener('mouseenter', () => {
-        all.forEach((l, i) => l.style.color = i <= idx ? '#c47f00' : '#ccc');
+(function () {
+    var picker = document.querySelector('.star-picker');
+    if (!picker) return;
+    var labels = Array.from(picker.querySelectorAll('.star-label'));
+
+    function setLit(upTo) {
+        labels.forEach(function (l, i) {
+            l.classList.toggle('is-lit', i < upTo);
+        });
+    }
+
+    labels.forEach(function (lbl, idx) {
+        lbl.addEventListener('mouseenter', function () { setLit(idx + 1); });
+        lbl.addEventListener('click', function () { setLit(idx + 1); });
     });
-    lbl.addEventListener('mouseleave', () => {
-        const checked = document.querySelector('.star-picker input:checked');
-        const val = checked ? parseInt(checked.value) : 0;
-        all.forEach((l, i) => l.style.color = i < val ? '#c47f00' : '#ccc');
+    picker.addEventListener('mouseleave', function () {
+        var checked = picker.querySelector('input:checked');
+        setLit(checked ? parseInt(checked.value, 10) : 0);
     });
-    lbl.addEventListener('click', () => {
-        all.forEach((l, i) => l.style.color = i <= idx ? '#c47f00' : '#ccc');
-    });
-});
+})();
 </script>
 
 <?php require dirname(__DIR__) . '/includes/footer.php'; ?>
