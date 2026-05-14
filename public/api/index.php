@@ -4,9 +4,12 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../includes/bootstrap.php';
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+
+$allowed_origin = getenv('APP_URL') ?: 'https://mundial-store.vercel.app';
+header('Access-Control-Allow-Origin: ' . $allowed_origin);
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: X-Api-Key, Content-Type');
+header('Vary: Origin');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -44,6 +47,9 @@ $uri = rtrim($uri, '/');
 
 // Route: /products or /products/{id}
 if (preg_match('#^/products(?:/(\d+))?$#', $uri, $m)) {
+    if (api_rate_limit('products', 120)) {
+        json_out(['error' => 'Too many requests. Limit: 120 req/min.'], 429);
+    }
     require __DIR__ . '/products.php';
     $productId = isset($m[1]) ? (int)$m[1] : null;
     handle_products($productId);
@@ -52,6 +58,9 @@ if (preg_match('#^/products(?:/(\d+))?$#', $uri, $m)) {
 // Route: /orders or /orders/{id}
 if (preg_match('#^/orders(?:/(\d+))?$#', $uri, $m)) {
     require_api_key();
+    if (api_rate_limit('orders', 30)) {
+        json_out(['error' => 'Too many requests. Limit: 30 req/min.'], 429);
+    }
     require __DIR__ . '/orders.php';
     $orderId = isset($m[1]) ? (int)$m[1] : null;
     handle_orders($orderId);

@@ -10,6 +10,12 @@ require_once dirname(__DIR__, 2) . '/includes/bootstrap.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+if (api_rate_limit('search_suggest', 60)) {
+    http_response_code(429);
+    echo json_encode([]);
+    exit;
+}
+
 $q = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
 
 if (strlen($q) < 2) {

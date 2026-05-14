@@ -345,3 +345,72 @@ function send_password_reset_email(string $to, string $resetUrl): bool
 
     return smtp_send($to, $subject, $body);
 }
+
+/**
+ * Carga la configuración de la aplicación.
+ * En producción (Vercel) lee de variables de entorno.
+ * En local lee de config.local.php con fallback a config.example.php.
+ *
+ * @return array<string, mixed>
+ */
+function load_app_config(): array
+{
+    static $cfg = null;
+    if ($cfg !== null) {
+        return $cfg;
+    }
+
+    if (getenv('DATABASE_URL')) {
+        $cfg = [
+            'api_key' => (string)(getenv('API_KEY') ?: ''),
+        ];
+        return $cfg;
+    }
+
+    $local   = dirname(__DIR__) . '/config/config.local.php';
+    $example = dirname(__DIR__) . '/config/config.example.php';
+    $path    = is_file($local) ? $local : $example;
+    /** @var array<string, mixed> $cfg */
+    $cfg = require $path;
+    return $cfg;
+}
+
+/**
+ * Rate limiting por IP usando la base de datos.
+ * Devuelve true si se ha superado el límite (la petición debe rechazarse).
+ */
+function api_rate_limit(string $endpoint, int $max_per_minute = 60): bool
+{
+    $window  = (int)(time() / 60);
+    $ip_hash = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . $endpoint);
+
+    try {
+        $pdo = get_pdo();
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS api_rate_limits (
+            ip_hash      VARCHAR(64) NOT NULL,
+            window_minute BIGINT      NOT NULL,
+            requests     INT         NOT NULL DEFAULT 1,
+            PRIMARY KEY (ip_hash, window_minute)
+        )");
+
+        $st = $pdo->prepare(
+            'INSERT INTO api_rate_limits (ip_hash, window_minute, requests) VALUES (?, ?, 1)
+             ON CONFLICT (ip_hash, window_minute)
+             DO UPDATE SET requests = api_rate_limits.requests + 1
+             RETURNING requests'
+        );
+        $st->execute([$ip_hash, $window]);
+        $count = (int)$st->fetchColumn();
+
+        // Limpieza ocasional de ventanas antiguas (1 de cada 100 peticiones)
+        if (mt_rand(1, 100) === 1) {
+            $pdo->prepare('DELETE FROM api_rate_limits WHERE window_minute < ?')
+                ->execute([$window - 5]);
+        }
+
+        return $count > $max_per_minute;
+    } catch (\Throwable) {
+        return false;
+    }
+}
