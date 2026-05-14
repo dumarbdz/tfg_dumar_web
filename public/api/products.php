@@ -16,7 +16,7 @@ function handle_products(?int $id): never {
             json_out(['error' => 'Product not found'], 404);
         }
         $product['price']  = (float) $product['price'];
-        $product['active'] = (bool)  $product['active'];
+        $product['active'] = pg_bool($product['active']);
         $product['stock']  = fetch_stock($pdo, $id);
         json_out(['data' => $product]);
     }
@@ -29,7 +29,7 @@ function handle_products(?int $id): never {
     $products = $st->fetchAll(PDO::FETCH_ASSOC);
     foreach ($products as &$p) {
         $p['price']  = (float) $p['price'];
-        $p['active'] = (bool)  $p['active'];
+        $p['active'] = pg_bool($p['active']);
         $p['stock']  = fetch_stock($pdo, (int)$p['id']);
     }
     unset($p);

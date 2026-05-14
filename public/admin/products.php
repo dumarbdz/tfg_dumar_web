@@ -59,7 +59,9 @@ $products = $pdo->query(
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($products as $p): ?>
+        <?php foreach ($products as $p):
+            $isActive = pg_bool($p['active']);
+        ?>
             <tr>
                 <td><?= (int)$p['id'] ?></td>
                 <td><?= h($p['brand']) ?></td>
@@ -67,7 +69,7 @@ $products = $pdo->query(
                 <td><?= number_format((float)$p['price'], 2, ',', ' ') ?> €</td>
                 <td><?= (int)$p['total_stock'] ?> uds.</td>
                 <td>
-                    <?php if ($p['active']): ?>
+                    <?php if ($isActive): ?>
                         <span class="adm-badge adm-badge-green">Activo</span>
                     <?php else: ?>
                         <span class="adm-badge adm-badge-gray">Inactivo</span>
@@ -78,10 +80,10 @@ $products = $pdo->query(
                     <form method="post" style="display:inline">
                         <input type="hidden" name="_csrf" value="<?= h(csrf_token()) ?>">
                         <input type="hidden" name="product_id" value="<?= (int)$p['id'] ?>">
-                        <input type="hidden" name="new_active" value="<?= $p['active'] ? '0' : '1' ?>">
+                        <input type="hidden" name="new_active" value="<?= $isActive ? '0' : '1' ?>">
                         <button type="submit" name="toggle_active" value="1"
-                                class="adm-btn adm-btn-sm <?= $p['active'] ? 'adm-btn-danger' : 'adm-btn-outline' ?>">
-                            <?= $p['active'] ? 'Desactivar' : 'Activar' ?>
+                                class="adm-btn adm-btn-sm <?= $isActive ? 'adm-btn-danger' : 'adm-btn-outline' ?>">
+                            <?= $isActive ? 'Desactivar' : 'Activar' ?>
                         </button>
                     </form>
                 </td>

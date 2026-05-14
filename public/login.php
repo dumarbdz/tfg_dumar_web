@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id']       = (int)  $row['id'];
                     $_SESSION['user_email']    = $row['email'];
                     $_SESSION['user_name']     = $row['nombre'];
-                    $_SESSION['user_is_admin'] = (bool) $row['es_admin'];
+                    $_SESSION['user_is_admin'] = pg_bool($row['es_admin']);
                     header('Location: ' . $next);
                     exit;
                 }
