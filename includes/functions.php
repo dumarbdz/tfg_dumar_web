@@ -192,7 +192,7 @@ function app_base_url(): string
  * Envía un correo usando SMTP directo (compatible con Gmail, Outlook, etc.)
  * Lee la configuración del bloque 'smtp' en config.local.php.
  */
-function smtp_send(string $to, string $subject, string $body): bool
+function smtp_send(string $to, string $subject, string $plain, string $html = ''): bool
 {
     static $cfg = null;
     if ($cfg === null) {
@@ -261,15 +261,39 @@ function smtp_send(string $to, string $subject, string $body): bool
         $cmd('DATA');
 
         $enc = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-        $msg = "From: Mundial Store <{$from}>\r\n"
-             . "To: {$to}\r\n"
-             . "Subject: {$enc}\r\n"
-             . "MIME-Version: 1.0\r\n"
-             . "Content-Type: text/plain; charset=UTF-8\r\n"
-             . "Content-Transfer-Encoding: base64\r\n"
-             . "\r\n"
-             . chunk_split(base64_encode($body))
-             . "\r\n.\r\n";
+
+        if ($html !== '') {
+            $boundary = 'mws_' . bin2hex(random_bytes(8));
+            $msg = "From: Mundial Store <{$from}>\r\n"
+                 . "To: {$to}\r\n"
+                 . "Subject: {$enc}\r\n"
+                 . "MIME-Version: 1.0\r\n"
+                 . "Content-Type: multipart/alternative; boundary=\"{$boundary}\"\r\n"
+                 . "\r\n"
+                 . "--{$boundary}\r\n"
+                 . "Content-Type: text/plain; charset=UTF-8\r\n"
+                 . "Content-Transfer-Encoding: base64\r\n"
+                 . "\r\n"
+                 . chunk_split(base64_encode($plain))
+                 . "--{$boundary}\r\n"
+                 . "Content-Type: text/html; charset=UTF-8\r\n"
+                 . "Content-Transfer-Encoding: base64\r\n"
+                 . "\r\n"
+                 . chunk_split(base64_encode($html))
+                 . "--{$boundary}--\r\n"
+                 . "\r\n.\r\n";
+        } else {
+            $msg = "From: Mundial Store <{$from}>\r\n"
+                 . "To: {$to}\r\n"
+                 . "Subject: {$enc}\r\n"
+                 . "MIME-Version: 1.0\r\n"
+                 . "Content-Type: text/plain; charset=UTF-8\r\n"
+                 . "Content-Transfer-Encoding: base64\r\n"
+                 . "\r\n"
+                 . chunk_split(base64_encode($plain))
+                 . "\r\n.\r\n";
+        }
+
         fwrite($socket, $msg);
         $read();
         $cmd('QUIT');
@@ -280,45 +304,129 @@ function smtp_send(string $to, string $subject, string $body): bool
     return true;
 }
 
+function email_html_layout(string $content): string
+{
+    return '<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#f0f4f1;font-family:Arial,Helvetica,sans-serif;color:#1a2e22">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f1;padding:40px 16px">
+  <tr><td align="center">
+    <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%">
+
+      <!-- Cabecera -->
+      <tr>
+        <td style="background:#0d3320;padding:28px 40px;border-radius:10px 10px 0 0;text-align:center">
+          <div style="font-size:24px;font-weight:700;color:#ffffff;letter-spacing:1px">&#9917; MUNDIAL STORE</div>
+          <div style="font-size:13px;color:#7ec89a;margin-top:4px">Camisetas del Mundial 2026</div>
+        </td>
+      </tr>
+
+      <!-- Cuerpo -->
+      <tr>
+        <td style="background:#ffffff;padding:36px 40px;border-left:1px solid #d8eadf;border-right:1px solid #d8eadf">
+          ' . $content . '
+        </td>
+      </tr>
+
+      <!-- Pie -->
+      <tr>
+        <td style="background:#f0f7f3;padding:20px 40px;border-radius:0 0 10px 10px;border:1px solid #d8eadf;border-top:none;text-align:center">
+          <p style="margin:0;font-size:12px;color:#6b8a76">Mundial Store &middot; Camisetas del Mundial 2026</p>
+          <p style="margin:6px 0 0;font-size:11px;color:#9ab5a3">Este mensaje es generado automáticamente, por favor no respondas a este correo.</p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>';
+}
+
 /**
  * @param list<array{label:string,size:string,qty:int,line:float}> $lines
  */
 function send_order_confirmation_email(string $customerEmail, int $orderId, float $total, array $lines): bool
 {
-    $detalle  = str_repeat('-', 40) . "\r\n";
+    $subject = 'Mundial Store — Confirmación de pedido #' . $orderId;
+
+    // — Texto plano (fallback) —
+    $plainRows = '';
     foreach ($lines as $ln) {
-        $detalle .= '  · ' . $ln['label'] . ' — Talla ' . $ln['size']
-                  . ' × ' . (int) $ln['qty'] . ' ud.  →  '
-                  . number_format($ln['line'], 2, ',', ' ') . " €\r\n";
+        $plainRows .= '  · ' . $ln['label'] . ' — Talla ' . $ln['size']
+                    . ' x ' . (int)$ln['qty'] . ' ud.  '
+                    . number_format($ln['line'], 2, ',', ' ') . " EUR\r\n";
     }
-    $detalle .= str_repeat('-', 40) . "\r\n";
-    $detalle .= 'TOTAL: ' . number_format($total, 2, ',', ' ') . " €\r\n";
+    $plain  = "Hola,\r\n\r\n";
+    $plain .= "Gracias por tu compra en Mundial Store.\r\n";
+    $plain .= "Tu pedido #{$orderId} se ha registrado con exito.\r\n\r\n";
+    $plain .= "Detalle:\r\n" . str_repeat('-', 40) . "\r\n" . $plainRows;
+    $plain .= str_repeat('-', 40) . "\r\nTOTAL: " . number_format($total, 2, ',', ' ') . " EUR\r\n\r\n";
+    $plain .= "Nos pondremos en contacto contigo para gestionar el envio.\r\n";
+    $plain .= "-- Mundial Store\r\n";
 
-    // — Email al cliente —
-    $subjectCliente = 'Mundial Store — Confirmación de pedido #' . $orderId;
-    $bodyCliente  = "Hola,\r\n\r\n";
-    $bodyCliente .= "Gracias por tu compra en Mundial Store.\r\n";
-    $bodyCliente .= "Tu pedido #{$orderId} se ha registrado con éxito.\r\n\r\n";
-    $bodyCliente .= "Detalle del pedido:\r\n" . $detalle . "\r\n";
-    $bodyCliente .= "Nos pondremos en contacto contigo para gestionar el envío.\r\n\r\n";
-    $bodyCliente .= "— Mundial Store · Camisetas del Mundial 2026\r\n";
-    $ok = smtp_send($customerEmail, $subjectCliente, $bodyCliente);
+    // — HTML —
+    $htmlRows = '';
+    foreach ($lines as $ln) {
+        $htmlRows .= '<tr>'
+            . '<td style="padding:10px 12px;border-bottom:1px solid #e8f0eb;font-size:14px">' . htmlspecialchars($ln['label'], ENT_QUOTES, 'UTF-8') . '</td>'
+            . '<td style="padding:10px 12px;border-bottom:1px solid #e8f0eb;font-size:14px;text-align:center">' . htmlspecialchars($ln['size'], ENT_QUOTES, 'UTF-8') . '</td>'
+            . '<td style="padding:10px 12px;border-bottom:1px solid #e8f0eb;font-size:14px;text-align:center">' . (int)$ln['qty'] . '</td>'
+            . '<td style="padding:10px 12px;border-bottom:1px solid #e8f0eb;font-size:14px;text-align:right;font-weight:600">' . number_format($ln['line'], 2, ',', ' ') . ' &euro;</td>'
+            . '</tr>';
+    }
 
-    // — Copia al administrador (si está configurado) —
+    $htmlContent = '
+      <p style="margin:0 0 6px;font-size:15px;color:#6b8a76;font-weight:600">CONFIRMACI&Oacute;N DE PEDIDO</p>
+      <h1 style="margin:0 0 24px;font-size:26px;font-weight:700;color:#0d3320">Pedido #' . $orderId . '</h1>
+      <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#2d4a37">
+        Hola,<br><br>
+        Gracias por tu compra en <strong>Mundial Store</strong>. Tu pedido ha sido registrado con &eacute;xito
+        y nos pondremos en contacto contigo para gestionar el env&iacute;o.
+      </p>
+
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-bottom:24px;border:1px solid #d8eadf;border-radius:6px;overflow:hidden">
+        <thead>
+          <tr style="background:#f0f7f3">
+            <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#5a7a65;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #c3e0cf">Producto</th>
+            <th style="padding:10px 12px;text-align:center;font-size:11px;font-weight:700;color:#5a7a65;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #c3e0cf">Talla</th>
+            <th style="padding:10px 12px;text-align:center;font-size:11px;font-weight:700;color:#5a7a65;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #c3e0cf">Cant.</th>
+            <th style="padding:10px 12px;text-align:right;font-size:11px;font-weight:700;color:#5a7a65;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #c3e0cf">Importe</th>
+          </tr>
+        </thead>
+        <tbody>' . $htmlRows . '</tbody>
+        <tfoot>
+          <tr style="background:#f0f7f3">
+            <td colspan="3" style="padding:12px;font-size:14px;font-weight:700;color:#0d3320;border-top:2px solid #c3e0cf;text-align:right">TOTAL</td>
+            <td style="padding:12px;font-size:18px;font-weight:700;color:#138a4a;border-top:2px solid #c3e0cf;text-align:right">' . number_format($total, 2, ',', ' ') . ' &euro;</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div style="background:#f0f7f3;border-left:4px solid #138a4a;padding:14px 18px;border-radius:4px;font-size:13px;color:#3a5a44;line-height:1.5">
+        &#128666; Te notificaremos por email cuando tu pedido sea enviado.
+      </div>';
+
+    $html = email_html_layout($htmlContent);
+    $ok   = smtp_send($customerEmail, $subject, $plain, $html);
+
+    // — Copia al administrador —
     static $smtpCfg = null;
     if ($smtpCfg === null) {
         $all = is_file(dirname(__DIR__) . '/config/config.local.php')
             ? (require dirname(__DIR__) . '/config/config.local.php') : [];
         $smtpCfg = $all['smtp'] ?? [];
     }
-    $adminEmail = (string) ($smtpCfg['admin'] ?? '');
+    $adminEmail = (string)($smtpCfg['admin'] ?? getenv('ADMIN_EMAIL') ?: '');
     if ($adminEmail !== '' && $adminEmail !== $customerEmail) {
-        $subjectAdmin = 'Nuevo pedido #' . $orderId . ' — ' . $customerEmail;
-        $bodyAdmin  = "Nuevo pedido recibido.\r\n\r\n";
-        $bodyAdmin .= "Cliente: {$customerEmail}\r\n";
-        $bodyAdmin .= "Pedido: #{$orderId}\r\n\r\n";
-        $bodyAdmin .= $detalle . "\r\n";
-        smtp_send($adminEmail, $subjectAdmin, $bodyAdmin);
+        $adminSubject = 'Nuevo pedido #' . $orderId . ' — ' . $customerEmail;
+        $adminPlain   = "Nuevo pedido recibido.\r\nCliente: {$customerEmail}\r\nPedido: #{$orderId}\r\nTotal: "
+                      . number_format($total, 2, ',', ' ') . " EUR\r\n\r\n" . $plainRows;
+        smtp_send($adminEmail, $adminSubject, $adminPlain);
     }
 
     return $ok;
@@ -326,24 +434,98 @@ function send_order_confirmation_email(string $customerEmail, int $orderId, floa
 
 function send_welcome_email(string $to, string $name): bool
 {
-    $subject = 'Bienvenido/a a Mundial Store';
-    $body  = "Hola {$name},\r\n\r\n";
-    $body .= "¡Gracias por registrarte en Mundial Store!\r\n";
-    $body .= "Ya puedes explorar nuestro catálogo de camisetas del Mundial 2026.\r\n\r\n";
-    $body .= "— Mundial Store · Camisetas del Mundial 2026\r\n";
-    return smtp_send($to, $subject, $body);
+    $subject = '¡Bienvenido/a a Mundial Store, ' . $name . '!';
+
+    $plain  = "Hola {$name},\r\n\r\n";
+    $plain .= "Gracias por registrarte en Mundial Store.\r\n";
+    $plain .= "Ya puedes explorar nuestro catalogo de camisetas del Mundial 2026.\r\n\r\n";
+    $plain .= "Visita el catalogo: https://mundial-store.vercel.app/catalog.php\r\n\r\n";
+    $plain .= "-- Mundial Store\r\n";
+
+    $nameEsc = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    $htmlContent = '
+      <p style="margin:0 0 6px;font-size:15px;color:#6b8a76;font-weight:600">BIENVENIDO/A</p>
+      <h1 style="margin:0 0 20px;font-size:26px;font-weight:700;color:#0d3320">Hola, ' . $nameEsc . '!</h1>
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#2d4a37">
+        Gracias por registrarte en <strong>Mundial Store</strong>.<br>
+        Ya formas parte de nuestra comunidad. Explora m&aacute;s de 30 camisetas
+        oficiales de las mejores selecciones del mundo.
+      </p>
+
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px">
+        <tr>
+          <td style="background:#f0f7f3;border:1px solid #c3e0cf;border-radius:8px;padding:20px 24px">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="40" style="font-size:24px;vertical-align:top">&#127942;</td>
+                <td style="padding-left:12px;font-size:14px;color:#2d4a37;line-height:1.5">
+                  <strong style="display:block;margin-bottom:2px;color:#0d3320">Cat&aacute;logo completo</strong>
+                  Europa, Sudam&eacute;rica, &Aacute;frica y Asia
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px">
+        <tr>
+          <td style="background:#138a4a;border-radius:6px;text-align:center">
+            <a href="https://mundial-store.vercel.app/catalog.php"
+               style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:.3px">
+              Ver cat&aacute;logo &rarr;
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin:0;font-size:13px;color:#8aaa96;text-align:center">
+        Si no te has registrado t&uacute;, puedes ignorar este mensaje.
+      </p>';
+
+    return smtp_send($to, $subject, $plain, email_html_layout($htmlContent));
 }
 
 function send_password_reset_email(string $to, string $resetUrl): bool
 {
-    $subject = 'Mundial Store — Restablecer contraseña';
-    $body  = "Hola,\r\n\r\n";
-    $body .= "Para establecer una nueva contraseña, accede al siguiente enlace (válido durante 1 hora):\r\n\r\n";
-    $body .= $resetUrl . "\r\n\r\n";
-    $body .= "Si no has solicitado este cambio, ignora este mensaje.\r\n\r\n";
-    $body .= "— Mundial Store · Camisetas del Mundial 2026\r\n";
+    $subject = 'Mundial Store — Restablecer contrase&ntilde;a';
 
-    return smtp_send($to, $subject, $body);
+    $plain  = "Hola,\r\n\r\n";
+    $plain .= "Para establecer una nueva contrasena, accede al siguiente enlace (valido durante 1 hora):\r\n\r\n";
+    $plain .= $resetUrl . "\r\n\r\n";
+    $plain .= "Si no has solicitado este cambio, ignora este mensaje.\r\n\r\n";
+    $plain .= "-- Mundial Store\r\n";
+
+    $urlEsc = htmlspecialchars($resetUrl, ENT_QUOTES, 'UTF-8');
+    $htmlContent = '
+      <p style="margin:0 0 6px;font-size:15px;color:#6b8a76;font-weight:600">SEGURIDAD DE CUENTA</p>
+      <h1 style="margin:0 0 20px;font-size:26px;font-weight:700;color:#0d3320">Restablecer contrase&ntilde;a</h1>
+      <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#2d4a37">
+        Hemos recibido una solicitud para restablecer la contrase&ntilde;a de tu cuenta.<br>
+        Haz clic en el bot&oacute;n para crear una nueva. El enlace es v&aacute;lido durante <strong>1 hora</strong>.
+      </p>
+
+      <table cellpadding="0" cellspacing="0" style="margin:0 auto 28px">
+        <tr>
+          <td style="background:#138a4a;border-radius:6px;text-align:center">
+            <a href="' . $urlEsc . '"
+               style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:.3px">
+              Restablecer contrase&ntilde;a
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <div style="background:#fff8f0;border:1px solid #f5d9b0;border-radius:6px;padding:14px 18px;font-size:13px;color:#7a5520;line-height:1.5;margin-bottom:20px">
+        &#9888;&#65039; Si no has solicitado este cambio, ignora este mensaje. Tu contrase&ntilde;a actual seguir&aacute; siendo la misma.
+      </div>
+
+      <p style="margin:0;font-size:12px;color:#9ab5a3;text-align:center;word-break:break-all">
+        Si el bot&oacute;n no funciona, copia este enlace en tu navegador:<br>
+        <a href="' . $urlEsc . '" style="color:#138a4a">' . $urlEsc . '</a>
+      </p>';
+
+    return smtp_send($to, $subject, $plain, email_html_layout($htmlContent));
 }
 
 /**
