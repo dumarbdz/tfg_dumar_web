@@ -343,7 +343,7 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
             var stock = parseInt(chip.dataset.stock, 10);
             currentStock = stock;
             inputSize.value = size;
-            if (lbl) lbl.textContent = size + ' (' + stock + ' ud' + (stock !== 1 ? 's' : '') + ')';
+            if (lbl) lbl.textContent = size + (stock <= 3 ? ' — ¡Últimas unidades!' : '');
             if (qtyInput) { qtyInput.max = stock; if (parseInt(qtyInput.value,10) > stock) qtyInput.value = stock; }
         });
     });

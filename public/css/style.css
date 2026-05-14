@@ -923,20 +923,27 @@ h1 {
     border-color: #f59e0b;
     color: #92400e;
 }
-.size-chip.size-low.selected { background: #f59e0b; border-color: #d97706; color: #fff; }
+.size-chip.size-low.selected { background: var(--green); border-color: var(--green); color: #fff; }
 .size-chip:disabled {
     opacity: .38;
     cursor: not-allowed;
     text-decoration: line-through;
 }
 .size-chip-badge {
-    display: block;
-    font-size: .6rem;
+    display: inline-block;
+    font-size: .58rem;
     font-weight: 700;
     letter-spacing: 0;
-    color: inherit;
-    opacity: .75;
-    margin-top: .1rem;
+    color: #92400e;
+    background: #fef3c7;
+    border-radius: 3px;
+    padding: 0 .3rem;
+    margin-top: .15rem;
+    line-height: 1.5;
+}
+.size-chip.selected .size-chip-badge {
+    color: #fff;
+    background: rgba(255,255,255,.25);
 }
 
 /* Qty + Add row */
