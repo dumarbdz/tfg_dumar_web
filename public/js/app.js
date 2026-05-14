@@ -216,15 +216,11 @@ document.addEventListener('click', function (e) {
         btn.classList.add('is-open');
         menu.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
-        menu.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
     }
     function closeMenu() {
         btn.classList.remove('is-open');
         menu.classList.remove('is-open');
         btn.setAttribute('aria-expanded', 'false');
-        menu.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
     }
 
     btn.addEventListener('click', function () {
