@@ -1,6 +1,6 @@
 -- Datos de ejemplo — Mundial Store (PostgreSQL)
 
-INSERT INTO products (brand, model, slug, description, price, image_path, active) VALUES
+INSERT INTO productos (continente, seleccion, slug, descripcion, precio, imagen, activo) VALUES
 ('Europa', 'España',    'europa-espana',    'La Roja en su versión más icónica. Tejido técnico transpirable, escudo bordado en el pecho.',     89.99, '/images/europa-espana.svg',    TRUE),
 ('Europa', 'Francia',   'europa-francia',   'Les Bleus en azul profundo. Corte ajustado con escudo del gallo galo bordado.',                    89.99, '/images/europa-francia.svg',   TRUE),
 ('Europa', 'Alemania',  'europa-alemania',  'La Mannschaft en blanco clásico con detalles en negro y escudo del águila federal.',               89.99, '/images/europa-alemania.svg',  TRUE),
@@ -18,7 +18,7 @@ INSERT INTO products (brand, model, slug, description, price, image_path, active
 ('Asia', 'Arabia Saudí', 'asia-arabia-saudi', 'Las Águilas Verdes, sorpresa del Mundial con su victoria ante Argentina en Qatar 2022.',     79.99, '/images/asia-arabia-saudi.svg', TRUE),
 ('Asia', 'Australia',    'asia-australia',    'Los Socceroos en dorado y verde. Diseño moderno con escudo del canguro y la estrella federal.',79.99, '/images/asia-australia.svg',    TRUE);
 
-INSERT INTO product_stock (product_id, size, quantity) VALUES
+INSERT INTO stock (producto_id, talla, cantidad) VALUES
 (1,'S',4),(1,'M',8),(1,'L',5),
 (2,'S',5),(2,'M',7),(2,'L',4),
 (3,'S',3),(3,'M',6),(3,'L',5),
