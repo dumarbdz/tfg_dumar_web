@@ -1,7 +1,2 @@
 config/config.local.php
 .env
-.claude/
-MEMORIA_*.docx
-MEMORIA_*.md
-Plan_Despliegue_*.docx
-*.zip
