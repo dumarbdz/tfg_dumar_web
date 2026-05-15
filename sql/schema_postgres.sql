@@ -39,7 +39,7 @@ CREATE INDEX idx_rp_expira ON recuperaciones_password(expira_en);
 
 CREATE TABLE productos (
   id SERIAL PRIMARY KEY,
-  continente VARCHAR(50) NOT NULL,
+  continente VARCHAR(50) NOT NULL CHECK (continente IN ('Europa','Sudamérica','África','Asia')),
   seleccion VARCHAR(150) NOT NULL,
   slug VARCHAR(200) NOT NULL UNIQUE,
   descripcion TEXT,
@@ -62,7 +62,7 @@ CREATE TABLE pedidos (
   id SERIAL PRIMARY KEY,
   usuario_id INTEGER NOT NULL,
   total DECIMAL(10,2) NOT NULL,
-  estado VARCHAR(50) NOT NULL DEFAULT 'completado',
+  estado VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (estado IN ('pending','completed','shipped','cancelled')),
   envio_nombre VARCHAR(200) NOT NULL DEFAULT '',
   envio_linea1 VARCHAR(255) NOT NULL DEFAULT '',
   envio_postal VARCHAR(32) NOT NULL DEFAULT '',
@@ -110,6 +110,18 @@ CREATE TABLE intentos_login (
   bloqueado_hasta TIMESTAMP DEFAULT NULL,
   actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE OR REPLACE FUNCTION fn_intentos_login_touch()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.actualizado_en = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_intentos_login_touch
+BEFORE UPDATE ON intentos_login
+FOR EACH ROW EXECUTE FUNCTION fn_intentos_login_touch();
 
 -- Tabla para sesiones PHP en entorno serverless (Vercel)
 CREATE TABLE sessions (
