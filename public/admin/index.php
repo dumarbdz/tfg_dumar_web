@@ -46,8 +46,8 @@ for ($i = 29; $i >= 0; $i--) {
 $byStatus = $pdo->query(
     "SELECT estado, COUNT(*) AS total FROM pedidos GROUP BY estado"
 )->fetchAll();
-$statusMap = ['pending' => 'Pendiente', 'shipped' => 'Enviado', 'completed' => 'Completado', 'cancelled' => 'Cancelado'];
-$statusColors = ['pending' => '#fde68a', 'shipped' => '#bfdbfe', 'completed' => '#a7f3cc', 'cancelled' => '#fecaca'];
+$statusMap = ['pendiente' => 'Pendiente', 'enviado' => 'Enviado', 'completado' => 'Completado', 'cancelado' => 'Cancelado'];
+$statusColors = ['pendiente' => '#fde68a', 'enviado' => '#bfdbfe', 'completado' => '#a7f3cc', 'cancelado' => '#fecaca'];
 $stLabels  = array_map(static fn($r) => $statusMap[$r['estado']] ?? $r['estado'], $byStatus);
 $stTotals  = array_map(static fn($r) => (int)$r['total'], $byStatus);
 $stColors  = array_map(static fn($r) => $statusColors[$r['estado']] ?? '#d1d5db', $byStatus);
@@ -107,17 +107,17 @@ $stColors  = array_map(static fn($r) => $statusColors[$r['estado']] ?? '#d1d5db'
         <?php foreach ($recentOrders as $o): ?>
             <?php
             $badge = match($o['status']) {
-                'completed' => 'adm-badge-green',
-                'shipped'   => 'adm-badge-blue',
-                'pending'   => 'adm-badge-yellow',
-                'cancelled' => 'adm-badge-red',
-                default     => 'adm-badge-gray',
+                'completado' => 'adm-badge-green',
+                'enviado'    => 'adm-badge-blue',
+                'pendiente'  => 'adm-badge-yellow',
+                'cancelado'  => 'adm-badge-red',
+                default      => 'adm-badge-gray',
             };
             $label = match($o['status']) {
-                'completed' => 'Completado',
-                'shipped'   => 'Enviado',
-                'pending'   => 'Pendiente',
-                'cancelled' => 'Cancelado',
+                'completado' => 'Completado',
+                'enviado'    => 'Enviado',
+                'pendiente'  => 'Pendiente',
+                'cancelado'  => 'Cancelado',
                 default     => h($o['status']),
             };
             ?>

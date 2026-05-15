@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         $err = 'Sesión inválida.';
     } else {
         $newStatus = trim((string)($_POST['status'] ?? ''));
-        $validStatuses = ['pending', 'completed', 'shipped', 'cancelled'];
+        $validStatuses = ['pendiente', 'completado', 'enviado', 'cancelado'];
         if (!in_array($newStatus, $validStatuses, true)) {
             $err = 'Estado no válido.';
         } else {
@@ -48,17 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 }
 
 $statusLabels = [
-    'pending'   => 'Pendiente',
-    'completed' => 'Completado',
-    'shipped'   => 'Enviado',
-    'cancelled' => 'Cancelado',
+    'pendiente'  => 'Pendiente',
+    'completado' => 'Completado',
+    'enviado'    => 'Enviado',
+    'cancelado'  => 'Cancelado',
 ];
 $currentStatus = $order['estado'];
 $badgeClass = match($currentStatus) {
-    'completed' => 'adm-badge-green',
-    'shipped'   => 'adm-badge-blue',
-    'pending'   => 'adm-badge-yellow',
-    'cancelled' => 'adm-badge-red',
+    'completado' => 'adm-badge-green',
+    'enviado'    => 'adm-badge-blue',
+    'pendiente'  => 'adm-badge-yellow',
+    'cancelado'  => 'adm-badge-red',
     default     => 'adm-badge-gray',
 };
 ?>

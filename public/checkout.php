@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stOrder->execute([
                     $user['id'],
                     $orderTotal,
-                    'completed',
+                    'completado',
                     $draft['shipping_name'],
                     $draft['shipping_line1'],
                     $draft['shipping_postal'],

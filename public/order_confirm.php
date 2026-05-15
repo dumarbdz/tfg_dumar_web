@@ -45,7 +45,7 @@ $items = $st2->fetchAll();
 
 // Si el pedido está completado, comprobar qué productos ya tienen valoración
 $reviewed = [];
-if ($order['status'] === 'completed' && $items !== []) {
+if ($order['status'] === 'completado' && $items !== []) {
     $productIds = array_unique(array_column($items, 'producto_id'));
     $placeholders = implode(',', array_fill(0, count($productIds), '?'));
     $stRev = $pdo->prepare(
@@ -89,7 +89,7 @@ require dirname(__DIR__) . '/includes/header.php';
             <th>Talla</th>
             <th>Cant.</th>
             <th>Precio</th>
-            <?php if ($order['status'] === 'completed'): ?><th></th><?php endif; ?>
+            <?php if ($order['status'] === 'completado'): ?><th></th><?php endif; ?>
         </tr>
     </thead>
     <tbody>
@@ -99,7 +99,7 @@ require dirname(__DIR__) . '/includes/header.php';
                 <td><?= h((string) $it['size']) ?></td>
                 <td><?= (int) $it['quantity'] ?></td>
                 <td><?= number_format((float) $it['unit_price'], 2, ',', ' ') ?> €</td>
-                <?php if ($order['status'] === 'completed'): ?>
+                <?php if ($order['status'] === 'completado'): ?>
                     <td>
                         <?php if (isset($reviewed[(int)$it['producto_id']])): ?>
                             <span class="badge badge-green">✓ Valorado</span>

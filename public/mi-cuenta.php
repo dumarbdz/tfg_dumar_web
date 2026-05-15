@@ -145,16 +145,16 @@ require dirname(__DIR__) . '/includes/header.php';
                     <?php foreach ($recentOrders as $o): ?>
                         <?php
                         $statusLabels = [
-                            'completed' => 'Completado',
-                            'pending'   => 'Pendiente',
-                            'shipped'   => 'Enviado',
-                            'cancelled' => 'Cancelado',
+                            'completado' => 'Completado',
+                            'pendiente'  => 'Pendiente',
+                            'enviado'    => 'Enviado',
+                            'cancelado'  => 'Cancelado',
                         ];
                         $statusClasses = [
-                            'completed' => 'badge-green',
-                            'pending'   => 'badge-warning',
-                            'shipped'   => 'badge-green',
-                            'cancelled' => 'badge-danger',
+                            'completado' => 'badge-green',
+                            'pendiente'  => 'badge-warning',
+                            'enviado'    => 'badge-green',
+                            'cancelado'  => 'badge-danger',
                         ];
                         $statusLabel = $statusLabels[$o['status']] ?? ucfirst($o['status']);
                         $statusClass = $statusClasses[$o['status']] ?? 'badge-warning';

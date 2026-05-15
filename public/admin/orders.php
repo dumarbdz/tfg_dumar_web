@@ -52,7 +52,7 @@ $pdo = get_pdo();
 $statusFilter = trim((string) ($_GET['status'] ?? ''));
 $search       = trim((string) ($_GET['q'] ?? ''));
 
-$validStatuses = ['', 'pending', 'completed', 'shipped', 'cancelled'];
+$validStatuses = ['', 'pendiente', 'completado', 'enviado', 'cancelado'];
 if (!in_array($statusFilter, $validStatuses, true)) $statusFilter = '';
 
 $perPage = 15;
@@ -95,11 +95,11 @@ $stOrders->execute($params);
 $orders = $stOrders->fetchAll();
 
 $statusLabels = [
-    ''          => 'Todos',
-    'pending'   => 'Pendiente',
-    'completed' => 'Completado',
-    'shipped'   => 'Enviado',
-    'cancelled' => 'Cancelado',
+    ''           => 'Todos',
+    'pendiente'  => 'Pendiente',
+    'completado' => 'Completado',
+    'enviado'    => 'Enviado',
+    'cancelado'  => 'Cancelado',
 ];
 
 $paginationBase = '?status=' . urlencode($statusFilter) . ($search !== '' ? '&q=' . urlencode($search) : '');
@@ -154,10 +154,10 @@ $paginationBase = '?status=' . urlencode($statusFilter) . ($search !== '' ? '&q=
         <?php foreach ($orders as $o): ?>
             <?php
             $badgeClass = match($o['status']) {
-                'completed' => 'adm-badge-green',
-                'shipped'   => 'adm-badge-blue',
-                'pending'   => 'adm-badge-yellow',
-                'cancelled' => 'adm-badge-red',
+                'completado' => 'adm-badge-green',
+                'enviado'    => 'adm-badge-blue',
+                'pendiente'  => 'adm-badge-yellow',
+                'cancelado'  => 'adm-badge-red',
                 default     => 'adm-badge-gray',
             };
             $statusLbl = $statusLabels[$o['status']] ?? h($o['status']);

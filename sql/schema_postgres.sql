@@ -62,7 +62,7 @@ CREATE TABLE pedidos (
   id SERIAL PRIMARY KEY,
   usuario_id INTEGER NOT NULL,
   total DECIMAL(10,2) NOT NULL,
-  estado VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (estado IN ('pending','completed','shipped','cancelled')),
+  estado VARCHAR(20) NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','completado','enviado','cancelado')),
   envio_nombre VARCHAR(200) NOT NULL DEFAULT '',
   envio_linea1 VARCHAR(255) NOT NULL DEFAULT '',
   envio_postal VARCHAR(32) NOT NULL DEFAULT '',
