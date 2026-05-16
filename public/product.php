@@ -366,11 +366,14 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
         var data = new FormData(form);
         data.append('product_id', <?= $id ?>);
         var btn = document.getElementById('btn-add-cart');
+        var originalText = btn.textContent;
         btn.disabled = true;
+        btn.textContent = 'Añadiendo…';
         fetch('/cart_add.php', { method: 'POST', body: data })
             .then(function (r) { return r.json(); })
             .then(function (res) {
                 btn.disabled = false;
+                btn.textContent = originalText;
                 if (res.success) {
                     showToast(res.message);
                     var cartLink = document.querySelector('.nav-cart');
@@ -392,7 +395,7 @@ $maxStock = $sizesInStock !== [] ? max(array_column(iterator_to_array((function(
                     showToast(res.error, 'error');
                 }
             })
-            .catch(function () { btn.disabled = false; showToast('Error de conexión.', 'error'); });
+            .catch(function () { btn.disabled = false; btn.textContent = originalText; showToast('Error de conexión.', 'error'); });
     });
 })();
 

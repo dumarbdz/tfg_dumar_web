@@ -362,7 +362,10 @@ require dirname(__DIR__) . '/includes/header.php';
                 <input type="checkbox" name="simulate_fail" value="1">
                 Simular pago rechazado (prueba el flujo "No")
             </label>
-            <button type="submit" class="btn btn-primary">Confirmar y pagar</button>
+            <button type="submit" class="btn btn-primary" id="btn-pay"
+                    onclick="this.disabled=true;this.textContent='Procesando…';this.form.submit()">
+                Confirmar y pagar
+            </button>
         </form>
     <?php endif; ?>
 
