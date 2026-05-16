@@ -2,6 +2,7 @@
 
 DROP TABLE IF EXISTS sessions;
 DROP TABLE IF EXISTS intentos_login;
+DROP TABLE IF EXISTS carrito;
 DROP TABLE IF EXISTS favoritos;
 DROP TABLE IF EXISTS valoraciones;
 DROP TABLE IF EXISTS lineas_pedido;
@@ -94,6 +95,16 @@ CREATE TABLE valoraciones (
   UNIQUE (producto_id, usuario_id),
   CONSTRAINT fk_val_producto FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE,
   CONSTRAINT fk_val_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE carrito (
+  usuario_id  INTEGER      NOT NULL,
+  producto_id INTEGER      NOT NULL,
+  talla       VARCHAR(10)  NOT NULL,
+  cantidad    SMALLINT     NOT NULL CHECK (cantidad > 0),
+  PRIMARY KEY (usuario_id, producto_id, talla),
+  CONSTRAINT fk_cart_usuario  FOREIGN KEY (usuario_id)  REFERENCES usuarios(id)  ON DELETE CASCADE,
+  CONSTRAINT fk_cart_producto FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE favoritos (

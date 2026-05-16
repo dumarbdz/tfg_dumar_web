@@ -71,17 +71,26 @@ function require_admin(): array
 /** @return list<array{product_id:int,size:string,qty:int}> */
 function cart_items(): array
 {
+    $user = current_user();
+    if ($user !== null) {
+        $st = get_pdo()->prepare('SELECT producto_id, talla, cantidad FROM carrito WHERE usuario_id = ?');
+        $st->execute([$user['id']]);
+        $out = [];
+        foreach ($st->fetchAll() as $row) {
+            $out[] = ['product_id' => (int)$row['producto_id'], 'size' => (string)$row['talla'], 'qty' => (int)$row['cantidad']];
+        }
+        return $out;
+    }
+
     if (empty($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
         return [];
     }
     $out = [];
     foreach ($_SESSION['cart'] as $row) {
-        if (!is_array($row)) {
-            continue;
-        }
-        $pid = isset($row['product_id']) ? (int) $row['product_id'] : 0;
-        $size = isset($row['size']) ? (string) $row['size'] : '';
-        $qty = isset($row['qty']) ? (int) $row['qty'] : 0;
+        if (!is_array($row)) continue;
+        $pid  = isset($row['product_id']) ? (int)    $row['product_id'] : 0;
+        $size = isset($row['size'])       ? (string) $row['size']       : '';
+        $qty  = isset($row['qty'])        ? (int)    $row['qty']        : 0;
         if ($pid > 0 && $size !== '' && $qty > 0) {
             $out[] = ['product_id' => $pid, 'size' => $size, 'qty' => $qty];
         }
@@ -96,6 +105,22 @@ function cart_key(int $productId, string $size): string
 
 function cart_set_qty(int $productId, string $size, int $qty): void
 {
+    $user = current_user();
+    if ($user !== null) {
+        $pdo = get_pdo();
+        if ($qty <= 0) {
+            $pdo->prepare('DELETE FROM carrito WHERE usuario_id = ? AND producto_id = ? AND talla = ?')
+                ->execute([$user['id'], $productId, $size]);
+        } else {
+            $pdo->prepare(
+                'INSERT INTO carrito (usuario_id, producto_id, talla, cantidad)
+                 VALUES (?, ?, ?, ?)
+                 ON CONFLICT (usuario_id, producto_id, talla) DO UPDATE SET cantidad = EXCLUDED.cantidad'
+            )->execute([$user['id'], $productId, $size, $qty]);
+        }
+        return;
+    }
+
     if (!isset($_SESSION['cart']) || !is_array($_SESSION['cart'])) {
         $_SESSION['cart'] = [];
     }
@@ -104,11 +129,27 @@ function cart_set_qty(int $productId, string $size, int $qty): void
         unset($_SESSION['cart'][$key]);
         return;
     }
-    $_SESSION['cart'][$key] = [
-        'product_id' => $productId,
-        'size' => $size,
-        'qty' => $qty,
-    ];
+    $_SESSION['cart'][$key] = ['product_id' => $productId, 'size' => $size, 'qty' => $qty];
+}
+
+function cart_merge_session_to_db(int $userId): void
+{
+    if (empty($_SESSION['cart']) || !is_array($_SESSION['cart'])) return;
+    $pdo = get_pdo();
+    foreach ($_SESSION['cart'] as $row) {
+        if (!is_array($row)) continue;
+        $pid  = (int)    ($row['product_id'] ?? 0);
+        $size = (string) ($row['size']       ?? '');
+        $qty  = (int)    ($row['qty']        ?? 0);
+        if ($pid <= 0 || $size === '' || $qty <= 0) continue;
+        $pdo->prepare(
+            'INSERT INTO carrito (usuario_id, producto_id, talla, cantidad)
+             VALUES (?, ?, ?, ?)
+             ON CONFLICT (usuario_id, producto_id, talla) DO UPDATE
+             SET cantidad = carrito.cantidad + EXCLUDED.cantidad'
+        )->execute([$userId, $pid, $size, $qty]);
+    }
+    unset($_SESSION['cart']);
 }
 
 /** Ruta interna segura para redirecciones ?next= */

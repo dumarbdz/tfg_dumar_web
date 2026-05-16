@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_email']    = $row['email'];
                     $_SESSION['user_name']     = $row['nombre'];
                     $_SESSION['user_is_admin'] = pg_bool($row['es_admin']);
+                    cart_merge_session_to_db((int) $row['id']);
                     header('Location: ' . $next);
                     exit;
                 }
